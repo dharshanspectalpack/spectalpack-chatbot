@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectal Pack - AI Assistant</title>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+
+  <body>
+    <!-- Typing Animation Popup -->
+    <div class="typing-popup" id="typingPopup">
+      <div class="typing-content">
+        <div class="company-branding">
+          <span class="brand-icon"> </span>
+          <span class="typing-text" id="typingText"></span>
+          <span class="cursor" id="cursor">|</span>
+        </div>
+        <p class="typing-subtitle">design . print .brand</p>
+      </div>
+    </div>
+
+    <!-- Chat Avatar Button -->
+    <div class="chat-avatar" id="chatAvatar">
+      <img src="avatar2.jpg" alt="Spectal AI Assistant" />
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="header-content">
+        <div class="avatar"></div>
+          <div class="header-info">
+            <h2>Spectal Pack AI</h2>
+            <p class="status">Online • Ready to help</p>
+          </div>
+        </div>
+        <div class="header-buttons">
+          <!-- Menu Button (3 dots) -->
+          <button class="header-btn menu-btn" id="menuBtn" title="More options">
+            ⋮
+          </button>
+          <!-- Close Button -->
+          <button class="close-btn" id="closeBtn">✕</button>
+        </div>
+      </div>
+
+      <!--Dropdown Menu-->
+      <div class="dropdown-menu" id="dropdownMenu">
+        <button class="dropdown-item" id="refreshChatBtn">
+          <span class="dropdown-icon">↻</span>
+          <span class="dropdown-text">Refresh Chat</span>
+        </button>
+        <button class="dropdown-item" id="clearChatBtn">
+          <span class="dropdown-icon">🧹</span>
+          <span class="dropdown-text">Clear Chat</span>
+        </button>
+      </div>
+      <!-- Chat Messages Area -->
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages will be added here dynamically -->
+      </div>
+
+      <!-- Input Area -->
+      <div class="chat-input">
+        <div class="input-container">
+          <input
+            type="text"
+            id="userInput"
+            autocomplete="off"
+            placeholder="Type your message here..."
+            onkeypress="handleKeyPress(event)"
+          />
+          <button class="send-btn" onclick="sendMessage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M22 2L11 13"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M22 2L15 22L11 13L2 9L22 2Z"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js?v=2"></script>
+  </body>
+</html>

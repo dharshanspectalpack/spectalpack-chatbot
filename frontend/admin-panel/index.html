@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectalpack Chatbot Admin</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <h2>Admin Login</h2>
+        <p>Please enter your credentials.</p>
+        <form id="login-form">
+          <input type="text" id="username" placeholder="Username" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="error-msg"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard-container" style="display: none">
+      <!-- Top Right Controls -->
+      <div class="top-right-controls">
+        <!-- Notifications Bell -->
+        <div class="notification-bell-container" id="notification-bell">
+          <button class="icon-btn" title="Notifications" style="position: relative;">
+            <i class="fas fa-bell"></i>
+            <div class="notification-badge" id="notification-badge" style="display: none;">0</div>
+          </button>
+          
+          <!-- Dropdown -->
+          <div class="notifications-dropdown" id="notifications-dropdown">
+            <div class="notifications-header">
+              <span>Notifications</span>
+              <button class="icon-btn" id="mark-all-read-btn" style="font-size: 0.8rem; color: var(--primary-color);" title="Check recent notifications">
+                Refresh
+              </button>
+            </div>
+            <ul class="notifications-list" id="notifications-list">
+              <div class="empty-notifications">No new notifications</div>
+            </ul>
+          </div>
+        </div>
+
+        <button id="logout-btn" class="icon-btn" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar: User List -->
+      <aside class="sidebar">
+        <div class="sidebar-header" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+          <div style="display:flex; justify-content: space-between; width: 100%; align-items: center;">
+            <h2><i class="fas fa-shield-alt" style="color: var(--primary-color);"></i> 
+              <span style="color:#000000">S</span><span style="color:#000000">P</span><span style="color:#000000">E</span><span style="color:#000000">C</span><span style="color:#000000">T</span><span style="color:#000000">A</span><span style="color:#000000">L</span><span style="color:#ef3937">P</span><span style="color:#20bb22">A</span><span style="color:#f6bb18">C</span><span style="color:#8f4a9d">K</span>
+            </h2>
+          </div>
+          <nav class="sidebar-nav" style="width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
+            <button id="nav-leads" class="nav-btn active" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f1f5f9; color: #0f172a; font-weight: 600; border-radius: 4px; cursor: pointer;">
+              <i class="fas fa-users" style="margin-right: 8px;"></i> Leads & Chats
+            </button>
+            <button id="nav-sample-kits" class="nav-btn" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: transparent; color: #475569; font-weight: 600; border-radius: 4px; cursor: pointer;">
+              <i class="fas fa-box-open" style="margin-right: 8px;"></i> Sample Kits
+            </button>
+          </nav>
+        </div>
+        
+        <!-- Search and List for Leads Container -->
+        <div id="leads-sidebar-content" style="display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
+            <div class="sidebar-search" style="display:flex; gap:0.5rem; padding-top: 1rem;">
+                <input type="text" id="user-search" placeholder="Search leads...">
+                <button id="refresh-users-btn" class="icon-btn" title="Refresh Leads" style="padding: 0 0.5rem;"><i class="fas fa-sync-alt"></i></button>
+            </div>
+        <ul id="user-list" class="user-list">
+          <!-- Users injected here via JS -->
+          <li class="loading">Loading leads...</li>
+        </ul>
+        </div>
+      </aside>
+
+      <!-- Main Content Area: Leads & Chats (Default View) -->
+      <main class="main-content" id="main-leads" style="display: flex;">
+        <!-- Header for selected user -->
+        <header class="content-header" id="content-header">
+          <div class="header-info">
+            <h2 id="current-user-name">Select a lead</h2>
+            <p id="current-user-company">to view conversation history</p>
+          </div>
+        </header>
+
+        <!-- Sessions List (Middle pane) -->
+        <div class="sessions-container" id="sessions-container" style="display: none">
+          <h3><i class="fas fa-comments"></i> Chat Sessions</h3>
+          <ul id="session-list" class="session-list">
+            <!-- Sessions injected here -->
+          </ul>
+        </div>
+
+        <!-- Chat History View (Right pane) -->
+        <div class="chat-container" id="chat-container" style="display: none;">
+            <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                <h3><i class="fas fa-history"></i> Message History</h3>
+                <button id="delete-session-btn" class="icon-btn" style="color:var(--danger);" title="Delete this chat session"><i class="fas fa-trash"></i> Delete Session</button>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <!-- Messages injected here -->
+            </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <i class="fas fa-inbox fa-4x"></i>
+          <p>Select a lead from the sidebar to view their sessions.</p>
+        </div>
+      </main>
+
+      <!-- Main Content Area: Sample Kits -->
+      <main class="main-content" id="main-sample-kits" style="display: none; padding: 2rem; overflow-y: auto;">
+        <header class="content-header" style="border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; background: var(--bg-color);">
+          <div class="header-info" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+              <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Sample Kit Requests</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">View all form submissions from the chatbot</p>
+            </div>
+            <button id="refresh-sk-btn" class="primary-btn" style="padding: 0.75rem 1.25rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+              <i class="fas fa-sync-alt" style="margin-right: 6px;"></i> Refresh Data
+            </button>
+          </div>
+        </header>
+
+        <div style="overflow-x: auto; max-height: calc(100vh - 150px); overflow-y: auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
+          <table id="sk-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 2px solid var(--border-color);">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Date</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Name & Chat User</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Company</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Phone</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Email</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Address</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Remarks</th>
+              </tr>
+            </thead>
+            <tbody id="sk-table-body">
+              <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading sample kit requests...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>  </body>
+</html>
+
