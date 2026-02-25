@@ -685,6 +685,31 @@ def widget_script():
         'script.js'
     )
 
+# ✅ FIX: Serve CSS and JS from root domain (/) for web-widget
+@app.route('/styles.css')
+def root_styles():
+    """Serve widget CSS from root domain"""
+    return send_from_directory(
+        os.path.join(os.path.dirname(__file__), '..', 'frontend', 'web-widget'),
+        'styles.css'
+    )
+
+@app.route('/script.js')
+def root_script():
+    """Serve widget JavaScript from root domain"""
+    return send_from_directory(
+        os.path.join(os.path.dirname(__file__), '..', 'frontend', 'web-widget'),
+        'script.js'
+    )
+
+@app.route('/avatar2.jpg')
+def avatar_image():
+    """Serve avatar image from root domain"""
+    return send_from_directory(
+        os.path.join(os.path.dirname(__file__), '..', 'frontend', 'web-widget'),
+        'avatar2.jpg'
+    )
+
 if __name__ == '__main__':
     db.init_db()
     port = int(os.getenv('PORT', 3000))
