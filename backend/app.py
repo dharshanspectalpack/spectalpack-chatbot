@@ -142,13 +142,15 @@ MODEL = "llama-3.1-8b-instant"
 
 @app.route('/')
 def home():
-    """Health check endpoint"""
-    return jsonify({
-        "status": "online",
-        "message": "Spectal pack AI Chatbot API is running",
-        "version": "1.0.0",
-        "groq_configured": bool(GROQ_API_KEY and GROQ_API_KEY.startswith('gsk_'))
-    })
+    """Serve the main chat widget on root domain"""
+    widget_path = os.path.join(
+        os.path.dirname(__file__), 
+        '..', 
+        'frontend', 
+        'web-widget', 
+        'index.html'
+    )
+    return send_file(widget_path)
 
 def is_pricing_query(message):
     """
