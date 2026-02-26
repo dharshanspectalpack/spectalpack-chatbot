@@ -8,7 +8,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/admin/style.css" />
   </head>
   <body>
     <!-- Login Modal -->
@@ -51,7 +52,7 @@
           <div class="notifications-dropdown" id="notifications-dropdown">
             <div class="notifications-header">
               <span>Notifications</span>
-              <button class="icon-btn" id="mark-all-read-btn" style="font-size: 0.8rem; color: var(--primary-color);" title="Check recent notifications">
+              <button class="icon-btn" id="mark-all-read-btn" style="font-size: 0.8rem; color: var(--brand-secondary);" title="Check recent notifications">
                 Refresh
               </button>
             </div>
@@ -70,7 +71,7 @@
       <aside class="sidebar">
         <div class="sidebar-header" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
           <div style="display:flex; justify-content: space-between; width: 100%; align-items: center;">
-            <h2><i class="fas fa-shield-alt" style="color: var(--primary-color);"></i> 
+            <h2><i class="fas fa-shield-alt" style="color: var(--brand-secondary);"></i> 
               <span style="color:#000000">S</span><span style="color:#000000">P</span><span style="color:#000000">E</span><span style="color:#000000">C</span><span style="color:#000000">T</span><span style="color:#000000">A</span><span style="color:#000000">L</span><span style="color:#ef3937">P</span><span style="color:#20bb22">A</span><span style="color:#f6bb18">C</span><span style="color:#8f4a9d">K</span>
             </h2>
           </div>
@@ -117,9 +118,9 @@
 
         <!-- Chat History View (Right pane) -->
         <div class="chat-container" id="chat-container" style="display: none;">
-            <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+            <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center; padding: 1rem; border-bottom: 1px solid var(--border-subtle);">
                 <h3><i class="fas fa-history"></i> Message History</h3>
-                <button id="delete-session-btn" class="icon-btn" style="color:var(--danger);" title="Delete this chat session"><i class="fas fa-trash"></i> Delete Session</button>
+                <button id="delete-session-btn" class="icon-btn" style="color:var(--status-danger-text);" title="Delete this chat session"><i class="fas fa-trash"></i> Delete Session</button>
             </div>
             <div id="chat-messages" class="chat-messages">
                 <!-- Messages injected here -->
@@ -134,22 +135,22 @@
 
       <!-- Main Content Area: Sample Kits -->
       <main class="main-content" id="main-sample-kits" style="display: none; padding: 2rem; overflow-y: auto;">
-        <header class="content-header" style="border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; background: var(--bg-color);">
+        <header class="content-header" style="border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; background: var(--bg-surface);">
           <div class="header-info" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div>
               <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Sample Kit Requests</h2>
               <p style="color: var(--text-muted); font-size: 0.9rem;">View all form submissions from the chatbot</p>
             </div>
-            <button id="refresh-sk-btn" class="primary-btn" style="padding: 0.75rem 1.25rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+            <button id="refresh-sk-btn" class="primary-btn" style="padding: 0.75rem 1.25rem; background: var(--brand-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
               <i class="fas fa-sync-alt" style="margin-right: 6px;"></i> Refresh Data
             </button>
           </div>
         </header>
 
-        <div style="overflow-x: auto; max-height: calc(100vh - 150px); overflow-y: auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
+        <div style="overflow-x: auto; max-height: calc(100vh - 150px); overflow-y: auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-subtle);">
           <table id="sk-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
             <thead>
-              <tr style="background: #f8fafc; border-bottom: 2px solid var(--border-color);">
+              <tr style="background: #f8fafc; border-bottom: 2px solid var(--border-subtle);">
                 <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Date</th>
                 <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Name & Chat User</th>
                 <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Company</th>
@@ -167,6 +168,5 @@
       </main>
     </div>
 
-    <script src="script.js"></script>  </body>
+    <script src="/admin/script.js"></script>  </body>
 </html>
-

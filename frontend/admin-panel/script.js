@@ -132,7 +132,7 @@ function renderUsers(users) {
                     <div class="user-meta">${user.company} | ${user.email}</div>
                     <div class="user-meta">Joined: ${new Date(user.created_at).toLocaleDateString()}</div>
                 </div>
-                <button class="icon-btn delete-user-btn" data-id="${user.id}" title="Delete Lead" style="color: var(--danger); font-size: 0.9rem; padding: 4px;">
+                <button class="icon-btn delete-user-btn" data-id="${user.id}" title="Delete Lead" style="color: var(--status-danger-text); font-size: 0.9rem; padding: 4px;">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -268,7 +268,7 @@ function renderSessions(sessions) {
         const date = new Date(sess.started_at).toLocaleString();
         li.innerHTML = `
             <span class="session-date">${date}</span>
-            <span class="session-status" style="color: ${sess.is_active ? 'var(--primary-color)' : 'var(--text-muted)'}">
+            <span class="session-status" style="color: ${sess.is_active ? 'var(--brand-secondary)' : 'var(--text-muted)'}">
                ${sess.is_active ? 'Active' : 'Ended'}
             </span>
         `;
@@ -474,7 +474,7 @@ function renderNotifications(notifications) {
         } else if (notif.type === 'sample_kit') {
             iconHtml = '<i class="fas fa-box-open notification-icon-sk"></i>';
         } else {
-            iconHtml = '<i class="fas fa-info-circle" style="color:var(--primary-color);"></i>';
+            iconHtml = '<i class="fas fa-info-circle" style="color:var(--brand-secondary);"></i>';
         }
         
         const timeStr = new Date(notif.created_at).toLocaleString();
