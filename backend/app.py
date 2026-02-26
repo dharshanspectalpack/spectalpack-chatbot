@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, stream_with_context, send_from_directory, send_file
+from flask import Flask, request, jsonify, Response, stream_with_context, send_from_directory, send_file, redirect
 from flask_cors import CORS
 import os
 import json
@@ -173,10 +173,10 @@ def set_security_headers(response):
         response.headers[k] = v
     return response
 
-# Groq API configuration
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL = "llama-3.1-8b-instant"
+# Gemini API configuration
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+MODEL = "gemini-2.5-flash"
 
 @app.route('/')
 def home():
@@ -213,13 +213,13 @@ def is_sample_kit_query(message):
 @app.route('/api/chat', methods=['POST'])
 def chat():
     """
-    Main chat endpoint using direct Groq API calls 
+    Main chat endpoint using direct Gemini API calls 
     """
     try:
-        # Verify API key exists and looks valid
-        if not GROQ_API_KEY or not GROQ_API_KEY.startswith('gsk_'):
+        # Verify API key exists
+        if not GEMINI_API_KEY:
             # Log internal detail only
-            print("[WARN] GROQ_API_KEY missing or invalid format")
+            print("[WARN] GEMINI_API_KEY missing")
             return jsonify({
                 "success": False,
                 "error": "Service temporarily unavailable. Please try again later."
@@ -339,9 +339,9 @@ def chat():
         # Make upstream request first to decide HTTP status before starting SSE
         try:
             upstream = requests.post(
-                GROQ_API_URL,
+                GEMINI_API_URL,
                 headers={
-                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Authorization": f"Bearer {GEMINI_API_KEY}",
                     "Content-Type": "application/json"
                 },
                 json={
@@ -366,13 +366,13 @@ def chat():
             except Exception:
                 error_detail = f"HTTP {upstream.status_code}"
 
-            print(f"Groq API Error ({upstream.status_code}): {error_detail}")
+            print(f"Gemini API Error ({upstream.status_code}): {error_detail}")
 
             if upstream.status_code == 429:
                 user_friendly_msg = "Sorry, we are currently facing high traffic and server trouble. Please try again later."
                 body = f"data: {json.dumps({'error': user_friendly_msg})}\n\n"
                 try:
-                    db.create_notification("API Rate Limit Hit", f"Groq API returned HTTP 429: {error_detail}", "error")
+                    db.create_notification("API Rate Limit Hit", f"Gemini API returned HTTP 429: {error_detail}", "error")
                 except Exception:
                     pass
                 if user_id is not None:
@@ -749,9 +749,9 @@ if __name__ == '__main__':
         if os.getenv('ENVIRONMENT') == 'production':
             import sys; sys.exit(1)
     port = int(os.getenv('PORT', 3000))
-    api_status = "YES" if GROQ_API_KEY and GROQ_API_KEY.startswith('gsk_') else "NO (Check .env file!)"
+    api_status = "YES" if GEMINI_API_KEY else "NO (Check .env file!)"
     logging.info("Spectal Chatbot API starting on http://localhost:%s", port)
-    logging.info("Groq API configured: %s", api_status)
+    logging.info("Gemini API configured: %s", api_status)
     logging.info("Chat endpoint: http://localhost:%s/api/chat", port)
     logging.info("Frontend URL CORS: %s", frontend_url)
     
