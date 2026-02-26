@@ -311,7 +311,7 @@ def chat():
                         "stream": True # Enable streaming from Groq
                     },
                     stream=True,     # Stream the response back
-                    timeout=30
+                    timeout=60
                 )
                 
                 # Handle initial API errors
