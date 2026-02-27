@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 import re
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_httpauth import HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
 import db_railway as db
 import logging
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -45,39 +43,13 @@ FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
 def fe_path(*parts):
     return os.path.join(FRONTEND_DIR, *parts)
 
-# Basic Auth Setup for Admin Panel
-auth = HTTPBasicAuth()
-
-# Admin Credentials for Admin Panel (REQUIRED - Must be set in environment)
+# Admin credentials (kept for future login re-implementation)
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
-# ⚠️ PRODUCTION: Fail startup if credentials are missing (no hardcoded defaults)
 if not ADMIN_USERNAME or not ADMIN_PASSWORD:
-    import sys
-    print("\n" + "="*70)
-    print("[ERROR] CRITICAL: Admin credentials not configured!")
-    print("="*70)
-    print("\nYou MUST set these environment variables before starting:")
-    print("  • ADMIN_USERNAME=your_admin_username")
-    print("  • ADMIN_PASSWORD=your_secure_password_16chars_minimum")
-    print("\nExample:")
-    print("  export ADMIN_USERNAME=admin_prod")
-    print("  export ADMIN_PASSWORD=Your$ecure#Pass123")
-    print("\nFor Railway/Cloud deployment:")
-    print("  Add these to your environment variables in the platform UI")
-    print("="*70 + "\n")
-    sys.exit(1)  # Exit immediately - don't allow startup
+    logging.warning("[WARN] ADMIN_USERNAME or ADMIN_PASSWORD not set. Admin login will be unauthenticated until credentials are configured.")
 
-ADMIN_USERS = {
-    ADMIN_USERNAME: generate_password_hash(ADMIN_PASSWORD)
-}
-
-@auth.verify_password
-def verify_password(username, password):
-    if username in ADMIN_USERS and check_password_hash(ADMIN_USERS.get(username), password):
-        return username
-    return None
 
 # Pricing restriction message
 PRICING_RESPONSE = "Thank you for your interest! For pricing details, please contact our sales team at sales@spectalpackaging.com or call +91 9036254107. Our team will provide you with detailed quotes tailored to your needs."
@@ -250,7 +222,10 @@ def chat():
 
         # === PRE-DEFINED RESPONSES ===
         
-        # Build conversation context with company-specific instructions
+        # Pricing inquiry — redirect to sales team
+        if is_pricing_query(user_message):
+            return handle_predefined_response(PRICING_RESPONSE)
+        
         messages = [
             {
                 "role": "system",
@@ -663,13 +638,15 @@ def root_script():
         'script.js'
     )
 
-@app.route('/avatar2.jpg')
-def avatar_image():
-    """Serve avatar image from root domain"""
+@app.route('/avatar1.jpg')
+def avatar1_image():
+    """Serve avatar1 image from root domain"""
     return send_from_directory(
         fe_path('web-widget'),
-        'avatar2.jpg'
+        'avatar1.jpg'
     )
+
+
 
 if __name__ == '__main__':
     try:

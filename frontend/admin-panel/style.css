@@ -474,43 +474,6 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* ==================== SAMPLE KITS TABLE ==================== */
-#main-sample-kits {
-  background: var(--bg-app);
-}
-
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-th {
-  background: #f8fafc;
-  padding: 1.25rem 1.5rem !important;
-  color: var(--text-muted) !important;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700 !important;
-  border-bottom: 1px solid var(--border-strong) !important;
-}
-
-td {
-  padding: 1.25rem 1.5rem !important;
-  border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-main);
-  font-size: 0.95rem;
-}
-
-tr:hover td {
-  background-color: #f8fafc;
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
 /* ==================== NOTIFICATIONS ==================== */
 .top-right-controls {
   position: absolute;

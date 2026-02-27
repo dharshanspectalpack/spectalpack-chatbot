@@ -160,6 +160,9 @@ document.addEventListener("DOMContentLoaded", function () {
     chatAvatar.classList.remove("hidden"); // Show avatar
   });
 
+  // Wire up Enter key on the input (replaces removed inline onkeypress)
+  userInput.addEventListener("keypress", handleKeyPress);
+
   // Menu button click - toggle dropdown
   const menuBtn = document.getElementById("menuBtn");
   const dropdownMenu = document.getElementById("dropdownMenu");
@@ -218,6 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
   loadUserInfo();
 
   // load chat history if available, otherwise start with welcome message
+  const chatMessages = document.getElementById("chatMessages");
   if (userInfo && userInfo.session_id) {
     // Show loading
     chatMessages.innerHTML = '<div class="loading"></div>';
@@ -776,9 +780,15 @@ function refreshChat() {
     //start user info collection properly with welcome
     addWelcomeMessage();
   } else {
-    // If user info exists, clear chat and re-render with existing info
+    // Clear chat locally and create a new session next time user sends a message
     chatHistory = [];
-    localStorage.removeItem("chatHistory"); // clear legacy data if present
+    localStorage.removeItem("chatHistory");
+    localStorage.removeItem("sessionId");  // ✅ Force new session on next message
+    // Update userInfo in memory (keep name/email/id but clear session)
+    if (userInfo) {
+      userInfo.session_id = null;
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    }
     const chatMessages = document.getElementById("chatMessages");
     if (chatMessages) chatMessages.innerHTML = "";
     addMessage(`Hello ${userInfo.name}! How can I help you today?`, "bot");
