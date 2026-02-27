@@ -521,7 +521,6 @@ def create_user_endpoint():
         return jsonify({'success': False, 'error': "Failed to create user. Please try again."}), 500
 
 @app.route('/api/admin/users', methods=['GET'])
-@auth.login_required
 def admin_get_users():
     """Admin: Fetch all users"""
     try:
@@ -532,7 +531,6 @@ def admin_get_users():
         return jsonify({"success": False, "error": "Failed to fetch users. Contact support."}), 500
 
 @app.route('/api/admin/users/<int:user_id>', methods=['DELETE'])
-@auth.login_required
 def admin_delete_user(user_id):
     """Admin: Delete a specific user"""
     try:
@@ -546,7 +544,6 @@ def admin_delete_user(user_id):
         return jsonify({"success": False, "error": "Failed to delete user. Contact support."}), 500
 
 @app.route('/api/admin/sessions/<int:user_id>', methods=['GET'])
-@auth.login_required
 def admin_get_sessions(user_id):
     """Admin: Fetch all sessions for a specific user"""
     try:
@@ -557,7 +554,6 @@ def admin_get_sessions(user_id):
         return jsonify({"success": False, "error": "Failed to fetch sessions. Contact support."}), 500
 
 @app.route('/api/admin/messages/<int:session_id>', methods=['GET'])
-@auth.login_required
 def admin_get_messages(session_id):
     """Admin: Fetch all messages for a specific session"""
     try:
@@ -568,7 +564,6 @@ def admin_get_messages(session_id):
         return jsonify({"success": False, "error": "Failed to fetch messages. Contact support."}), 500
 
 @app.route('/api/admin/sessions/<int:session_id>', methods=['DELETE'])
-@auth.login_required
 def admin_delete_session(session_id):
     """Admin: Delete a specific session"""
     try:
@@ -583,7 +578,6 @@ def admin_delete_session(session_id):
 
 
 @app.route('/api/admin/notifications', methods=['GET'])
-@auth.login_required
 def admin_get_notifications():
     """Admin: Fetch unread notifications"""
     try:
@@ -594,7 +588,6 @@ def admin_get_notifications():
         return jsonify({"success": False, "error": "Failed to fetch notifications. Contact support."}), 500
 
 @app.route('/api/admin/notifications/<int:notif_id>/read', methods=['POST'])
-@auth.login_required
 def admin_mark_notification_read(notif_id):
     """Admin: Mark notification as read"""
     try:
@@ -610,14 +603,12 @@ def admin_mark_notification_read(notif_id):
 # ==================== STATIC FILE SERVING ====================
 
 @app.route('/admin')
-@auth.login_required
 def admin_panel():
-    """Serve admin panel (login required)"""
+    """Serve admin panel"""
     admin_panel_path = fe_path('admin-panel', 'index.html')
     return send_file(admin_panel_path)
 
 @app.route('/admin/style.css')
-@auth.login_required
 def admin_style():
     """Serve admin panel CSS"""
     return send_from_directory(
@@ -626,7 +617,6 @@ def admin_style():
     )
 
 @app.route('/admin/script.js')
-@auth.login_required
 def admin_script():
     """Serve admin panel JavaScript"""
     return send_from_directory(

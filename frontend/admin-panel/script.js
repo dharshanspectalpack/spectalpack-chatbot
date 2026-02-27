@@ -1,12 +1,7 @@
 // Dynamically detect API base URL - works for localhost (dev) or production domain
 const API_BASE = window.location.origin + "/api/admin";
-let authHeaders = {};
 
 // DOM Elements
-const loginModal = document.getElementById("login-modal");
-const dashboard = document.getElementById("dashboard");
-const loginForm = document.getElementById("login-form");
-const loginError = document.getElementById("login-error");
 const userList = document.getElementById("user-list");
 const userSearch = document.getElementById("user-search");
 const currentUserName = document.getElementById("current-user-name");
@@ -16,9 +11,10 @@ const sessionList = document.getElementById("session-list");
 const chatContainer = document.getElementById("chat-container");
 const chatMessages = document.getElementById("chat-messages");
 const emptyState = document.getElementById("empty-state");
-const logoutBtn = document.getElementById("logout-btn");
 
 const navLeads = document.getElementById("nav-leads");
+const mainLeads = document.getElementById("main-leads");
+const leadsSidebarContent = document.getElementById("leads-sidebar-content");
 
 // Notification Elements
 const notificationBell = document.getElementById("notification-bell");
@@ -32,52 +28,24 @@ let allUsers = [];
 let currentSelectedUserId = null;
 let currentSelectedSessionId = null;
 
-// --- Authentication --- //
-loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-    const base64Auth = btoa(`${user}:${pass}`);
-    authHeaders = {
-        "Authorization": `Basic ${base64Auth}`,
-        "Content-Type": "application/json"
-    };
-
-    // Test auth by fetching users
+// --- Auto-initialize dashboard on page load ---
+document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch(`${API_BASE}/users`, { headers: authHeaders });
+        const response = await fetch(`${API_BASE}/users`);
         if (response.ok) {
             const data = await response.json();
             allUsers = data.users;
-            loginModal.style.display = "none";
-            dashboard.style.display = "flex";
             renderUsers(allUsers);
-            
-            // Start notifications polling
-            fetchNotifications();
-            if (notificationPollingInterval) clearInterval(notificationPollingInterval);
-            notificationPollingInterval = setInterval(fetchNotifications, 15000); // Poll every 15s
         } else {
-            loginError.textContent = "Invalid credentials";
+            userList.innerHTML = "<li class='user-item'>Failed to load leads.</li>";
         }
     } catch (err) {
-        loginError.textContent = "Connection error. Ensure backend is running.";
+        userList.innerHTML = "<li class='user-item'>Connection error. Ensure backend is running.</li>";
     }
-});
-
-logoutBtn.addEventListener("click", () => {
-    authHeaders = {};
-    allUsers = [];
-    loginModal.style.display = "flex";
-    dashboard.style.display = "none";
-    document.getElementById("password").value = "";
-    resetView();
-    
-    // Stop notifications polling
-    if (notificationPollingInterval) {
-        clearInterval(notificationPollingInterval);
-        notificationPollingInterval = null;
-    }
+    // Start notifications polling
+    fetchNotifications();
+    if (notificationPollingInterval) clearInterval(notificationPollingInterval);
+    notificationPollingInterval = setInterval(fetchNotifications, 15000);
 });
 
 // --- Navigation --- //
@@ -85,10 +53,11 @@ navLeads.addEventListener("click", () => {
     navLeads.classList.add("active");
     navLeads.style.background = "#f1f5f9";
     navLeads.style.color = "#0f172a";
-    
+
     mainLeads.style.display = "flex";
     leadsSidebarContent.style.display = "flex";
 });
+
 
 // --- User List --- //
 function renderUsers(users) {
@@ -135,8 +104,7 @@ async function deleteUser(userId) {
 
     try {
         const response = await fetch(`${API_BASE}/users/${userId}`, {
-            method: 'DELETE',
-            headers: authHeaders
+            method: 'DELETE'
         });
         const data = await response.json();
         
@@ -172,7 +140,7 @@ if (refreshUsersBtn) {
     refreshUsersBtn.addEventListener("click", async () => {
         refreshUsersBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         try {
-            const response = await fetch(`${API_BASE}/users`, { headers: authHeaders });
+            const response = await fetch(`${API_BASE}/users`, {});
             if (response.ok) {
                 const data = await response.json();
                 allUsers = data.users;
@@ -219,7 +187,7 @@ async function selectUser(user) {
     sessionList.innerHTML = "<li>Loading sessions...</li>";
 
     try {
-        const response = await fetch(`${API_BASE}/sessions/${user.id}`, { headers: authHeaders });
+        const response = await fetch(`${API_BASE}/sessions/${user.id}`, {});
         const data = await response.json();
         if (data.success) {
             renderSessions(data.sessions);
@@ -267,7 +235,7 @@ async function selectSession(sessionId) {
     chatMessages.innerHTML = "<div>Loading messages...</div>";
 
     try {
-        const response = await fetch(`${API_BASE}/messages/${sessionId}`, { headers: authHeaders });
+        const response = await fetch(`${API_BASE}/messages/${sessionId}`, {});
         const data = await response.json();
         if (data.success) {
             renderMessages(data.messages);
@@ -291,8 +259,7 @@ if (deleteSessionBtn) {
 
         try {
             const response = await fetch(`${API_BASE}/sessions/${currentSelectedSessionId}`, {
-                method: 'DELETE',
-                headers: authHeaders
+                method: 'DELETE'
             });
             const data = await response.json();
             
@@ -437,7 +404,7 @@ async function fetchNotifications() {
     if (Object.keys(authHeaders).length === 0) return; // Not logged in
     
     try {
-        const response = await fetch(`${API_BASE}/notifications`, { headers: authHeaders });
+        const response = await fetch(`${API_BASE}/notifications`, {});
         if (response.ok) {
             const data = await response.json();
             renderNotifications(data.notifications);
@@ -450,8 +417,7 @@ async function fetchNotifications() {
 async function markNotificationRead(notifId) {
     try {
         const response = await fetch(`${API_BASE}/notifications/${notifId}/read`, {
-            method: 'POST',
-            headers: authHeaders
+            method: 'POST'
         });
         if (response.ok) {
             // Re-fetch to update badge and list
