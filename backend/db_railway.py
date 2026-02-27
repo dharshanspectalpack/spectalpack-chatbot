@@ -239,6 +239,10 @@ def get_all_users():
         # ✅ Limit to prevent resource exhaustion
         cursor.execute("SELECT id, name, company, email, created_at FROM users ORDER BY created_at DESC LIMIT 10000")
         users = cursor.fetchall()
+        # Serialize datetime fields for JSON
+        for u in users:
+            if u.get('created_at'):
+                u['created_at'] = u['created_at'].isoformat()
         return users
     except Error as e:
         print(f"[ERROR] Failed to fetch users: {e}")
@@ -266,6 +270,12 @@ def get_user_sessions(user_id):
             LIMIT 100
         ''', (user_id,))
         sessions = cursor.fetchall()
+        # Serialize datetime fields for JSON
+        for s in sessions:
+            if s.get('started_at'):
+                s['started_at'] = s['started_at'].isoformat()
+            if s.get('ended_at'):
+                s['ended_at'] = s['ended_at'].isoformat()
         return sessions
     except Error as e:
         print(f"[ERROR] Failed to fetch sessions: {e}")
@@ -293,6 +303,10 @@ def get_session_messages(session_id):
             LIMIT 1000
         ''', (session_id,))
         messages = cursor.fetchall()
+        # Serialize datetime fields for JSON
+        for msg in messages:
+            if msg.get('timestamp'):
+                msg['timestamp'] = msg['timestamp'].isoformat()
         return messages
     except Error as e:
         print(f"[ERROR] Failed to fetch messages: {e}")

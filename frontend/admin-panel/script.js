@@ -186,6 +186,12 @@ async function selectUser(user) {
     chatContainer.style.display = "none";
     sessionList.innerHTML = "<li>Loading sessions...</li>";
 
+    // Stop any active session message refresh
+    if (sessionRefreshInterval) {
+        clearInterval(sessionRefreshInterval);
+        sessionRefreshInterval = null;
+    }
+
     try {
         const response = await fetch(`${API_BASE}/sessions/${user.id}`, {});
         const data = await response.json();
@@ -229,20 +235,37 @@ function renderSessions(sessions) {
     });
 }
 
+let sessionRefreshInterval = null;
+
 async function selectSession(sessionId) {
     currentSelectedSessionId = sessionId;
     chatContainer.style.display = "flex";
     chatMessages.innerHTML = "<div>Loading messages...</div>";
 
-    try {
-        const response = await fetch(`${API_BASE}/messages/${sessionId}`, {});
-        const data = await response.json();
-        if (data.success) {
-            renderMessages(data.messages);
-        }
-    } catch (err) {
-        chatMessages.innerHTML = "<div class='error-msg'>Error loading messages</div>";
+    // Clear any previous refresh interval
+    if (sessionRefreshInterval) {
+        clearInterval(sessionRefreshInterval);
+        sessionRefreshInterval = null;
     }
+
+    const loadMessages = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/messages/${sessionId}`);
+            const data = await response.json();
+            if (data.success) {
+                renderMessages(data.messages);
+            }
+        } catch (err) {
+            if (!sessionRefreshInterval) { // Only show error on initial load
+                chatMessages.innerHTML = "<div class='error-msg'>Error loading messages</div>";
+            }
+        }
+    };
+
+    await loadMessages();
+
+    // Auto-refresh messages every 10 seconds while session is open
+    sessionRefreshInterval = setInterval(loadMessages, 10000);
 }
 
 // --- Delete Session --- //

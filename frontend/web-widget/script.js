@@ -758,13 +758,7 @@ function formatTime(date) {
   });
 }
 
-// ============================================
-// SAVE CHAT HISTORY (Deprecated - now using DB)
-// ============================================
-function saveChatHistory() {
-  // Deliberately left empty to prevent saving to localStorage.
-  // The server handles inserting messages into the Railway DB.
-}
+
 
 // ============================================
 // REFRESH CHAT BUTTON
