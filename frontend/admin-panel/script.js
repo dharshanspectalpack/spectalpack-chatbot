@@ -427,9 +427,22 @@ async function markNotificationRead(notifId) {
 }
 
 if (markAllReadBtn) {
-    markAllReadBtn.addEventListener("click", (e) => {
+    markAllReadBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        fetchNotifications();
+        // Mark all unread notifications as read
+        try {
+            const response = await fetch(`${API_BASE}/notifications`);
+            if (response.ok) {
+                const data = await response.json();
+                const unread = (data.notifications || []).filter(n => !n.is_read);
+                await Promise.all(unread.map(n =>
+                    fetch(`${API_BASE}/notifications/${n.id}/read`, { method: 'POST' })
+                ));
+                fetchNotifications();
+            }
+        } catch (err) {
+            console.error("Failed to mark all read", err);
+        }
     });
 }
 

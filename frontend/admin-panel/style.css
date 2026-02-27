@@ -552,6 +552,19 @@ tr:last-child td {
   flex-direction: column;
   z-index: 100;
   max-height: 450px;
+  overflow: hidden;
+  transform-origin: top right;
+}
+
+/* ✅ THIS is the critical rule that makes the dropdown appear */
+.notifications-dropdown.show {
+  display: flex;
+  animation: dropdownOpen 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
 }
 
 .notifications-header {
@@ -567,10 +580,19 @@ tr:last-child td {
   border-top-right-radius: 16px;
 }
 
+.notifications-list {
+  overflow-y: auto;
+  flex: 1;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .notification-item {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
   transition: var(--transition-fast);
+  cursor: pointer;
 }
 
 .notification-item:hover {
@@ -601,13 +623,10 @@ tr:last-child td {
 }
 
 .notification-icon-error {
-  color: var(--danger);
+  color: var(--status-danger-text);
 }
 .notification-icon-lead {
-  color: var(--primary-color);
-}
-.notification-icon-sk {
-  color: #10b981;
+  color: var(--brand-secondary);
 }
 
 .empty-notifications {
