@@ -401,10 +401,8 @@ function renderNotifications(notifications) {
 }
 
 async function fetchNotifications() {
-    if (Object.keys(authHeaders).length === 0) return; // Not logged in
-    
     try {
-        const response = await fetch(`${API_BASE}/notifications`, {});
+        const response = await fetch(`${API_BASE}/notifications`);
         if (response.ok) {
             const data = await response.json();
             renderNotifications(data.notifications);
