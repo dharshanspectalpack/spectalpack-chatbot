@@ -445,18 +445,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-/* ==================== CHAT ==================== */
-.chat-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg-surface);
-  margin: 1.5rem 3rem 1.5rem 3rem;
-  border-radius: 16px;
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-sm);
-}
+
 
 .chat-header {
   padding: 1.25rem 2rem;

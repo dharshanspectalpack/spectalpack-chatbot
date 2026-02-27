@@ -251,14 +251,21 @@ async function selectSession(sessionId) {
     const loadMessages = async () => {
         try {
             const response = await fetch(`${API_BASE}/messages/${sessionId}`);
+            if (!response.ok) {
+                console.error(`[Admin] Messages API returned HTTP ${response.status}`);
+                chatMessages.innerHTML = `<div class='error-msg'>Error ${response.status}: Could not load messages. Check server logs.</div>`;
+                return;
+            }
             const data = await response.json();
+            console.log("[Admin] Messages response:", data);
             if (data.success) {
                 renderMessages(data.messages);
+            } else {
+                chatMessages.innerHTML = `<div class='error-msg'>Server error: ${data.error || 'Unknown error'}</div>`;
             }
         } catch (err) {
-            if (!sessionRefreshInterval) { // Only show error on initial load
-                chatMessages.innerHTML = "<div class='error-msg'>Error loading messages</div>";
-            }
+            console.error("[Admin] Failed to fetch messages:", err);
+            chatMessages.innerHTML = `<div class='error-msg'>Connection error: ${err.message}</div>`;
         }
     };
 
