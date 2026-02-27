@@ -79,9 +79,7 @@
             <button id="nav-leads" class="nav-btn active" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f1f5f9; color: #0f172a; font-weight: 600; border-radius: 4px; cursor: pointer;">
               <i class="fas fa-users" style="margin-right: 8px;"></i> Leads & Chats
             </button>
-            <button id="nav-sample-kits" class="nav-btn" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: transparent; color: #475569; font-weight: 600; border-radius: 4px; cursor: pointer;">
-              <i class="fas fa-box-open" style="margin-right: 8px;"></i> Sample Kits
-            </button>
+
           </nav>
         </div>
         
@@ -132,41 +130,8 @@
           <p>Select a lead from the sidebar to view their sessions.</p>
         </div>
       </main>
-
-      <!-- Main Content Area: Sample Kits -->
-      <main class="main-content" id="main-sample-kits" style="display: none; padding: 2rem; overflow-y: auto;">
-        <header class="content-header" style="border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; background: var(--bg-surface);">
-          <div class="header-info" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div>
-              <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Sample Kit Requests</h2>
-              <p style="color: var(--text-muted); font-size: 0.9rem;">View all form submissions from the chatbot</p>
-            </div>
-            <button id="refresh-sk-btn" class="primary-btn" style="padding: 0.75rem 1.25rem; background: var(--brand-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
-              <i class="fas fa-sync-alt" style="margin-right: 6px;"></i> Refresh Data
-            </button>
-          </div>
-        </header>
-
-        <div style="overflow-x: auto; max-height: calc(100vh - 150px); overflow-y: auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-subtle);">
-          <table id="sk-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
-            <thead>
-              <tr style="background: #f8fafc; border-bottom: 2px solid var(--border-subtle);">
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Date</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Name & Chat User</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Company</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Phone</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Email</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Address</th>
-                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Remarks</th>
-              </tr>
-            </thead>
-            <tbody id="sk-table-body">
-              <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading sample kit requests...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
     </div>
 
     <script src="/admin/script.js"></script>  </body>
 </html>
+

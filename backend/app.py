@@ -89,22 +89,7 @@ PRICING_KEYWORDS = [
     r'\b(invoice|billing|payment terms|price list)\b'
 ]
 
-# Sample Kit specific message and form
-SAMPLE_KIT_RESPONSE = """<p>Thank you for your interest in a sample kit! Since you are already on our website, you can simply fill out the form below to request one, and our team will get in touch with you shortly.</p>
-<form id="sample-kit-form" class="chat-form" onsubmit="submitSampleKitForm(event)">
-  <input type="text" id="sk-name" placeholder="Name" required>
-  <input type="text" id="sk-company" placeholder="Company Name" required>
-  <input type="tel" id="sk-phone" placeholder="Phone Number" required>
-  <input type="email" id="sk-email" placeholder="Email Address" required>
-  <textarea id="sk-address" placeholder="Shipping Address" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
-  <textarea id="sk-remarks" placeholder="Remarks (Optional)" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
-  <button type="submit">Submit Request</button>
-</form>"""
 
-# Keywords that trigger sample kit restriction
-SAMPLE_KIT_KEYWORDS = [
-    r'\b(sample kit|sample pack|testing kit)\b'
-]
 
 # Load knowledge base files
 KNOWLEDGE_BASE_PATH = os.path.join(
@@ -195,20 +180,7 @@ def is_pricing_query(message):
             return True
     return False
 
-def is_sample_kit_query(message):
-    """
-    Check if user message is asking for a sample kit
-    """
-    message_lower = message.lower()
-    
-    # Do not trigger form if this is the form submission payload itself!
-    if "[form submission: sample kit request]" in message_lower:
-        return False
-        
-    for pattern in SAMPLE_KIT_KEYWORDS:
-        if re.search(pattern, message_lower, re.IGNORECASE):
-            return True
-    return False
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
@@ -256,7 +228,7 @@ def chat():
         else:
             chat_history = [m for m in chat_history if isinstance(m, dict)]
         
-        # Predefined Response helper for pricing, sample kit, etc.
+        # Predefined Response helper for pricing, etc.
         user_id_raw = data.get('user_id')
         user_id = int(user_id_raw) if isinstance(user_id_raw, (int, str)) and str(user_id_raw).strip().isdigit() else None
         
@@ -277,27 +249,6 @@ def chat():
             return Response(stream_with_context(generate_predefined()), mimetype='text/event-stream')
 
         # === PRE-DEFINED RESPONSES ===
-        
-        # Check if they already submitted the sample kit form
-        already_submitted = False
-        for msg in chat_history:
-            if "[form submission: sample kit request]" in msg.get("content", "").lower():
-                already_submitted = True
-                break
-            
-        if is_sample_kit_query(user_message):
-            if already_submitted:
-                return handle_predefined_response("You have already submitted a sample kit request. Our team will contact you shortly!")
-            else:
-                return handle_predefined_response(SAMPLE_KIT_RESPONSE)
-            
-        if "[form submission: sample kit request]" in user_message.lower():
-            # Trigger DB notification
-            try:
-                db.create_notification("New Sample Kit Request", "A user requested a sample kit. Check the Sample Kits tab.", "sample_kit")
-            except Exception as e:
-                print(f"[WARN] Failed to create notification: {e}")
-            return handle_predefined_response("Thank you! Your sample kit request has been received. Our team will review your details and get in touch with you shortly.")
         
         # Build conversation context with company-specific instructions
         messages = [
@@ -630,16 +581,6 @@ def admin_delete_session(session_id):
         print(f"[ERROR] in admin_delete_session: {str(e)}")
         return jsonify({"success": False, "error": "Failed to delete session. Contact support."}), 500
 
-@app.route('/api/admin/sample_kits', methods=['GET'])
-@auth.login_required
-def admin_get_sample_kits():
-    """Admin: Fetch all submitted sample kit requests"""
-    try:
-        sample_kits = db.get_all_sample_kit_requests()
-        return jsonify({"success": True, "sample_kits": sample_kits}), 200
-    except Exception as e:
-        print(f"[ERROR] in admin_get_sample_kits: {str(e)}")
-        return jsonify({"success": False, "error": "Failed to fetch sample kits. Contact support."}), 500
 
 @app.route('/api/admin/notifications', methods=['GET'])
 @auth.login_required

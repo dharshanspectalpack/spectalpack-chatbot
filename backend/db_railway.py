@@ -216,13 +216,7 @@ def save_message(session_id, role, content):
             (session_id, role, content)
         )
         
-        # Add sample kit notification if applicable
-        if role == 'user' and '[Form Submission: Sample Kit Request]' in content:
-            cursor.execute(
-                "INSERT INTO notifications (type, title, message) VALUES (%s, %s, %s)",
-                ('sample_kit', 'New Sample Kit Request', 'A new sample kit request has been submitted.')
-            )
-            
+        
         return True
     except Error as e:
         print(f"[ERROR] Failed to save message: {e}")
@@ -413,98 +407,6 @@ def mark_notification_read(notif_id):
     except Error as e:
         print(f"[ERROR] Failed to mark notification read: {e}")
         return False
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-
-def get_all_sample_kit_requests():
-    """Admin function: Get all parsed sample kit requests from messaging history."""
-    connection = get_connection()
-    if not connection:
-        return []
-
-    cursor = None
-    try:
-        cursor = connection.cursor(dictionary=True)
-        import re
-        
-        # Search messages starting with the identifier. Join with users to get basic details.
-        cursor.execute('''
-            SELECT m.id, m.content, m.timestamp, u.name as user_name, u.email as user_email, u.company as user_company
-            FROM messages m
-            JOIN chat_sessions s ON m.session_id = s.id
-            JOIN users u ON s.user_id = u.id
-            WHERE m.role = 'user' AND m.content LIKE '%[Form Submission: Sample Kit Request]%'
-            ORDER BY m.timestamp DESC
-            LIMIT 1000
-        ''')
-        requests = cursor.fetchall()
-        
-        # Parse the text block into structured JSON safely using Regex in case newlines were stripped.
-        parsed_requests = []
-        for req in requests:
-            content = req["content"]
-            
-            parsed_req = {
-                "id": req["id"],
-                "timestamp": req["timestamp"].isoformat() if req["timestamp"] else None,
-                "user_name": req["user_name"],
-                "user_email": req["user_email"],
-                "user_company": req["user_company"],
-                # Defaults
-                "form_name": "N/A",
-                "form_company": "N/A",
-                "phone": "N/A",
-                "email": "N/A",
-                "address": "N/A",
-                "remarks": "None"
-            }
-            
-            # Regex extractors - using more robust patterns to handle potential HTML/Markdown from the chat widget
-            name_match = re.search(r'Name:\s*<[^>]+>\s*(.*?)(?:<br>|\n|(?=\s*<strong))', content, re.IGNORECASE)
-            if not name_match: name_match = re.search(r'Name:\s*(.*?)(?=\s*Company:|$)', content, re.IGNORECASE)
-            
-            company_match = re.search(r'Company:\s*<[^>]+>\s*(.*?)(?:<br>|\n|(?=\s*<strong))', content, re.IGNORECASE)
-            if not company_match: company_match = re.search(r'Company:\s*(.*?)(?=\s*Phone:|$)', content, re.IGNORECASE)
-            
-            phone_match = re.search(r'Phone:\s*<[^>]+>\s*(.*?)(?:<br>|\n|(?=\s*<strong))', content, re.IGNORECASE)
-            if not phone_match: phone_match = re.search(r'Phone:\s*(.*?)(?=\s*Email:|$)', content, re.IGNORECASE)
-            
-            email_match = re.search(r'Email:\s*<[^>]+>\s*(.*?)(?:<br>|\n|(?=\s*<strong))', content, re.IGNORECASE)
-            if not email_match: email_match = re.search(r'Email:\s*(.*?)(?=\s*Address:|$)', content, re.IGNORECASE)
-            
-            address_match = re.search(r'Address:\s*<[^>]+>\s*(.*?)(?:<br>|\n|(?=\s*<strong))', content, re.IGNORECASE)
-            if not address_match: address_match = re.search(r'Address:\s*(.*?)(?=\s*Remarks:|$)', content, re.IGNORECASE)
-            
-            remarks_match = re.search(r'Remarks:\s*<[^>]+>\s*(.*?)(?:<br>|\n|</div>|$)', content, re.IGNORECASE)
-            if not remarks_match: remarks_match = re.search(r'Remarks:\s*(.*)', content, re.IGNORECASE)
-            
-            if name_match: parsed_req["form_name"] = name_match.group(1).strip()
-            if company_match: parsed_req["form_company"] = company_match.group(1).strip()
-            if phone_match: parsed_req["phone"] = phone_match.group(1).strip()
-            if email_match: parsed_req["email"] = email_match.group(1).strip()
-            if address_match: parsed_req["address"] = address_match.group(1).strip()
-            if remarks_match: parsed_req["remarks"] = remarks_match.group(1).strip() if remarks_match.group(1).strip() else "None"
-                    
-            # Clean up any residual HTML tags block in case regex picked it up
-            def clean_html(text):
-                return re.sub(r'<[^>]+>', '', text).strip()
-                
-            parsed_req["form_name"] = clean_html(parsed_req["form_name"])
-            parsed_req["form_company"] = clean_html(parsed_req["form_company"])
-            parsed_req["phone"] = clean_html(parsed_req["phone"])
-            parsed_req["email"] = clean_html(parsed_req["email"])
-            parsed_req["address"] = clean_html(parsed_req["address"])
-            parsed_req["remarks"] = clean_html(parsed_req["remarks"])
-            
-            parsed_requests.append(parsed_req)
-
-        return parsed_requests
-    except Error as e:
-        print(f"[ERROR] Failed to fetch sample kit requests: {e}")
-        return []
     finally:
         if cursor:
             cursor.close()

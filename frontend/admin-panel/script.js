@@ -19,12 +19,6 @@ const emptyState = document.getElementById("empty-state");
 const logoutBtn = document.getElementById("logout-btn");
 
 const navLeads = document.getElementById("nav-leads");
-const navSampleKits = document.getElementById("nav-sample-kits");
-const mainLeads = document.getElementById("main-leads");
-const mainSampleKits = document.getElementById("main-sample-kits");
-const leadsSidebarContent = document.getElementById("leads-sidebar-content");
-const skTableBody = document.getElementById("sk-table-body");
-const refreshSkBtn = document.getElementById("refresh-sk-btn");
 
 // Notification Elements
 const notificationBell = document.getElementById("notification-bell");
@@ -89,30 +83,11 @@ logoutBtn.addEventListener("click", () => {
 // --- Navigation --- //
 navLeads.addEventListener("click", () => {
     navLeads.classList.add("active");
-    navSampleKits.classList.remove("active");
     navLeads.style.background = "#f1f5f9";
     navLeads.style.color = "#0f172a";
-    navSampleKits.style.background = "transparent";
-    navSampleKits.style.color = "#475569";
     
     mainLeads.style.display = "flex";
     leadsSidebarContent.style.display = "flex";
-    mainSampleKits.style.display = "none";
-});
-
-navSampleKits.addEventListener("click", () => {
-    navSampleKits.classList.add("active");
-    navLeads.classList.remove("active");
-    navSampleKits.style.background = "#f1f5f9";
-    navSampleKits.style.color = "#0f172a";
-    navLeads.style.background = "transparent";
-    navLeads.style.color = "#475569";
-    
-    mainLeads.style.display = "none";
-    leadsSidebarContent.style.display = "none";
-    mainSampleKits.style.display = "block";
-    
-    fetchAndRenderSampleKits();
 });
 
 // --- User List --- //
@@ -384,48 +359,6 @@ function resetView() {
     emptyState.style.display = "flex";
 }
 
-// --- Sample Kits --- //
-async function fetchAndRenderSampleKits() {
-    skTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
-    try {
-        const response = await fetch(`${API_BASE}/sample_kits`, { headers: authHeaders });
-        if (response.ok) {
-            const data = await response.json();
-            renderSampleKits(data.sample_kits);
-        } else {
-            skTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: red;">Failed to load sample kits.</td></tr>';
-        }
-    } catch (err) {
-        skTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: red;">Connection error.</td></tr>';
-    }
-}
-
-function renderSampleKits(kits) {
-    skTableBody.innerHTML = "";
-    if (!kits || kits.length === 0) {
-        skTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #666;">No sample kit requests found.</td></tr>';
-        return;
-    }
-
-    kits.forEach(kit => {
-        const tr = document.createElement("tr");
-        tr.style.borderBottom = "1px solid #eee";
-        
-        const dateStr = kit.timestamp ? new Date(kit.timestamp).toLocaleString() : 'Unknown';
-        
-        tr.innerHTML = `
-            <td style="padding: 12px; font-size: 0.9em; color: #555;">${dateStr}</td>
-            <td style="padding: 12px;"><strong>${kit.form_name}</strong><br><small style="color:#888">Chat User: ${kit.user_name}</small></td>
-            <td style="padding: 12px;">${kit.form_company}</td>
-            <td style="padding: 12px;">${kit.phone}</td>
-            <td style="padding: 12px;">${kit.email}</td>
-            <td style="padding: 12px;">${kit.address}</td>
-            <td style="padding: 12px; font-size: 0.9em; color: #666; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${kit.remarks}">${kit.remarks}</td>
-        `;
-        skTableBody.appendChild(tr);
-    });
-}
-
 // --- Notifications --- //
 
 // Toggle dropdown visibility
@@ -471,8 +404,6 @@ function renderNotifications(notifications) {
             iconHtml = '<i class="fas fa-exclamation-triangle notification-icon-error"></i>';
         } else if (notif.type === 'lead') {
             iconHtml = '<i class="fas fa-user-plus notification-icon-lead"></i>';
-        } else if (notif.type === 'sample_kit') {
-            iconHtml = '<i class="fas fa-box-open notification-icon-sk"></i>';
         } else {
             iconHtml = '<i class="fas fa-info-circle" style="color:var(--brand-secondary);"></i>';
         }
@@ -492,12 +423,9 @@ function renderNotifications(notifications) {
             markNotificationRead(notif.id);
             
             // Optional: navigate depending on type
-            if (notif.type === 'sample_kit') {
-                if(navSampleKits) navSampleKits.click();
-            }
             if (notif.type === 'lead') {
                 if(navLeads) navLeads.click();
-                if(refreshUsersBtn) refreshUsersBtn.click(); // Hacky but works for now to pull newest
+                if(refreshUsersBtn) refreshUsersBtn.click();
             }
         });
         
@@ -541,12 +469,3 @@ if (markAllReadBtn) {
     });
 }
 
-if (refreshSkBtn) {
-    refreshSkBtn.addEventListener("click", () => {
-        const originalHtml = refreshSkBtn.innerHTML;
-        refreshSkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
-        fetchAndRenderSampleKits().finally(() => {
-            refreshSkBtn.innerHTML = originalHtml;
-        });
-    });
-}

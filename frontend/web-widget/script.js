@@ -428,51 +428,6 @@ function loadUserInfo() {
   return false;
 }
 
-// ============================================
-// SAMPLE KIT FORM SUBMISSION
-// ============================================
-function submitSampleKitForm(event) {
-  event.preventDefault();
-
-  const nameInput = document.getElementById("sk-name").value.trim();
-  const companyInput = document.getElementById("sk-company").value.trim();
-  const phoneInput = document.getElementById("sk-phone").value.trim();
-  const emailInput = document.getElementById("sk-email").value.trim();
-  const addressInput = document.getElementById("sk-address").value.trim();
-  const remarksInput = document.getElementById("sk-remarks").value.trim();
-
-  // Validate Email (accept any valid email format, not just Gmail)
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(emailInput)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
-
-  // Validate Phone (10-15 digits, optional)
-  if (phoneInput && !/^[0-9]{10,15}$/.test(phoneInput)) {
-    alert("Please enter a valid phone number (10-15 digits).");
-    return;
-  }
-
-  // Convert the form to basic text so it doesn't stay interactive in history
-  const contentDiv = event.target.closest('.message-content');
-  if (contentDiv) {
-    contentDiv.innerHTML = `<p>Sample kit request submitted successfully!</p>
-    <div style="color:#666; font-size:12px; margin-top:10px; background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-      <strong>Name:</strong> ${sanitizeHTML(nameInput)}<br>
-      <strong>Company:</strong> ${sanitizeHTML(companyInput)}<br>
-      <strong>Phone:</strong> ${sanitizeHTML(phoneInput)}<br>
-      <strong>Email:</strong> ${sanitizeHTML(emailInput)}<br>
-      <strong>Address:</strong> ${sanitizeHTML(addressInput)}<br>
-      <strong>Remarks:</strong> ${sanitizeHTML(remarksInput) || 'None'}
-    </div>`;
-  }
-
-  // Simulate user sending message to log their details to DB and trigger AI thanks
-  const userInput = document.getElementById("userInput");
-  userInput.value = `[Form Submission: Sample Kit Request]\nName: ${nameInput}\nCompany: ${companyInput}\nPhone: ${phoneInput}\nEmail: ${emailInput}\nAddress: ${addressInput}\nRemarks: ${remarksInput || 'None'}`;
-  sendMessage();
-}
 
 // ============================================
 // HANDLE KEY PRESS (Enter to send)
@@ -704,10 +659,6 @@ function addMessage(content, sender) {
   const chatMessages = document.getElementById("chatMessages");
   if (!chatMessages) return;
 
-  // Do not show the sample kit submission text as a user bubble
-  if (sender === "user" && typeof content === "string" && content.startsWith("[Form Submission: Sample Kit Request]")) {
-    return;
-  }
 
   const messageDiv = document.createElement("div");
   messageDiv.className = `message ${sender}-message`;
@@ -750,11 +701,6 @@ function renderChatHistory() {
   chatMessages.innerHTML = "";
 
   chatHistory.forEach((message, index) => {
-    // Do not show the sample kit submission text as a user bubble
-    if (message.role === "user" && typeof message.content === "string" && message.content.startsWith("[Form Submission: Sample Kit Request]")) {
-      return;
-    }
-
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${message.role === "user" ? "user-message" : "bot-message"}`;
 
@@ -768,25 +714,7 @@ function renderChatHistory() {
     ) {
       contentDiv.innerHTML = message.content;
     } else if (message.role === "assistant" || message.role === "bot") {
-      // Check if this is a sample kit form that was already submitted later in the history
-      let isSubmitted = false;
-      if (message.content.includes('<form id="sample-kit-form"')) {
-        for (let i = index + 1; i < chatHistory.length; i++) {
-          if (chatHistory[i].role === "user" && chatHistory[i].content.startsWith("[Form Submission: Sample Kit Request]")) {
-            isSubmitted = true;
-            break;
-          }
-        }
-      }
-
-      if (isSubmitted) {
-        let modifiedContent = message.content.replace(/<form id="sample-kit-form"[\s\S]*?<\/form>/, 
-          '<div style="background: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #bbf7d0; color: #166534; font-size: 13px; text-align: center; margin-top: 10px;">✅ Sample Kit Request Submitted</div>'
-        );
-        contentDiv.innerHTML = marked.parse(modifiedContent);
-      } else {
-        contentDiv.innerHTML = marked.parse(message.content); // Use Marked.js for AI responses
-      }
+      contentDiv.innerHTML = marked.parse(message.content);
     } else {
       contentDiv.innerHTML = `<p>${sanitizeHTML(message.content)}</p>`; // Sanitize user input
     }
