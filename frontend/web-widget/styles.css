@@ -159,7 +159,7 @@ body {
   z-index: 1000;
   background-color: white;
   overflow: hidden;
-  border: 3px solid #4caf50;
+  border: none;
   opacity: 1;
   transform: scale(1);
 }
