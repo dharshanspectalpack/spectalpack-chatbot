@@ -144,6 +144,9 @@ document.addEventListener("DOMContentLoaded", function () {
       chatAvatar.classList.add("hidden");         // hide avatar while chat is open
       chatAvatar.classList.remove("float-idle");  // pause float while hidden
 
+      // Show quick-action welcome card again if no user messages yet
+      resetWelcomeCard();
+
       // Close typing animation popup immediately
       const typingPopup = document.getElementById("typingPopup");
       if (typingPopup && typingPopup.classList.contains("show")) {
@@ -887,9 +890,19 @@ function showWelcomeCard() {
   welcomeCardHidden = false;
   const card = document.getElementById("welcomeCard");
   if (card) card.classList.remove("hidden");
-  // Hide the quick-action row again when resetting to welcome state
+  // Hide the quick-action row when welcome card is visible
   const qaRow = document.getElementById("quickActionRow");
   if (qaRow) qaRow.classList.add("hidden");
+}
+
+// Reset welcome card every time the chat is opened
+// Called from the avatar click handler when chat opens
+function resetWelcomeCard() {
+  // Only reset if user hasn't sent any messages yet (chat history is just greetings)
+  const hasUserMessages = chatHistory.some(m => m.role === "user");
+  if (!hasUserMessages) {
+    showWelcomeCard();
+  }
 }
 
 // ============================================
