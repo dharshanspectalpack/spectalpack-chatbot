@@ -840,6 +840,7 @@ function clearChat() {
   const chatMessages = document.getElementById("chatMessages");
   if (chatMessages) chatMessages.innerHTML = "";
 
+  showWelcomeCard();
   addWelcomeMessage();
 }
 
@@ -852,17 +853,19 @@ function hideWelcomeCard() {
   if (welcomeCardHidden) return;
   welcomeCardHidden = true;
   const card = document.getElementById("welcomeCard");
-  if (card) {
-    card.classList.add("hidden");
-  }
+  if (card) card.classList.add("hidden");
+  // Reveal the compact quick-action buttons now that user is chatting
+  const qaRow = document.getElementById("quickActionRow");
+  if (qaRow) qaRow.classList.remove("hidden");
 }
 
 function showWelcomeCard() {
   welcomeCardHidden = false;
   const card = document.getElementById("welcomeCard");
-  if (card) {
-    card.classList.remove("hidden");
-  }
+  if (card) card.classList.remove("hidden");
+  // Hide the quick-action row again when resetting to welcome state
+  const qaRow = document.getElementById("quickActionRow");
+  if (qaRow) qaRow.classList.add("hidden");
 }
 
 // ============================================

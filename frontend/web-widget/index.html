@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spectal Pack - AI Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=4" />
   </head>
 
   <body>
@@ -30,23 +30,19 @@
       <!-- Chat Header -->
       <div class="chat-header">
         <div class="header-content">
-        <div class="avatar"></div>
+          <div class="avatar"></div>
           <div class="header-info">
             <h2>Spectal Pack AI</h2>
             <p class="status">Online • Ready to help</p>
           </div>
         </div>
         <div class="header-buttons">
-          <!-- Menu Button (3 dots) -->
-          <button class="header-btn menu-btn" id="menuBtn" title="More options">
-            ⋮
-          </button>
-          <!-- Close Button -->
+          <button class="header-btn menu-btn" id="menuBtn" title="More options">⋮</button>
           <button class="close-btn" id="closeBtn">✕</button>
         </div>
       </div>
 
-      <!--Dropdown Menu-->
+      <!-- Dropdown Menu -->
       <div class="dropdown-menu" id="dropdownMenu">
         <button class="dropdown-item" id="refreshChatBtn">
           <span class="dropdown-icon">↻</span>
@@ -58,7 +54,12 @@
         </button>
       </div>
 
-      <!-- Welcome Action Card (shown on open, hidden when user types) -->
+      <!-- Chat Messages Area -->
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages added by JS -->
+      </div>
+
+      <!-- Welcome Card — sits just above the input, vanishes on typing -->
       <div class="welcome-card" id="welcomeCard">
         <p class="welcome-card-title">👋 Hi there! Quick actions:</p>
         <div class="welcome-card-btns">
@@ -73,15 +74,10 @@
         </div>
       </div>
 
-      <!-- Chat Messages Area -->
-      <div class="chat-messages" id="chatMessages">
-        <!-- Messages will be added here dynamically -->
-      </div>
-
       <!-- Input Area -->
       <div class="chat-input">
-        <!-- Quick Action Buttons (left of input) -->
-        <div class="quick-action-row">
+        <!-- Quick Action Buttons — hidden by default, appear after user starts typing -->
+        <div class="quick-action-row hidden" id="quickActionRow">
           <button class="quick-action-btn" id="quickSampleKitBtn" title="Request Sample Kit">
             <span>📦</span><span class="qa-label">Sample Kit</span>
           </button>
@@ -98,20 +94,8 @@
           />
           <button class="send-btn" onclick="sendMessage()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M22 2L11 13"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M22 2L15 22L11 13L2 9L22 2Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+              <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
         </div>
@@ -128,7 +112,7 @@
         <form id="sampleKitForm" onsubmit="submitSampleKit(event)">
           <div class="form-row">
             <input type="text" id="sk-name" placeholder="Your Name *" required maxlength="100" />
-            <input type="text" id="sk-company" placeholder="Company Name *" required maxlength="150" />
+            <input type="text" id="sk-company" placeholder="Company Name" maxlength="150" />
           </div>
           <div class="form-row">
             <input type="email" id="sk-email" placeholder="Email Address *" required maxlength="255" />
@@ -167,7 +151,7 @@
         <form id="quotationForm" onsubmit="submitQuotation(event)">
           <div class="form-row">
             <input type="text" id="qt-name" placeholder="Your Name *" required maxlength="100" />
-            <input type="text" id="qt-company" placeholder="Company Name *" required maxlength="150" />
+            <input type="text" id="qt-company" placeholder="Company Name" maxlength="150" />
           </div>
           <div class="form-row">
             <input type="email" id="qt-email" placeholder="Email Address *" required maxlength="255" />
@@ -219,6 +203,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
   </body>
 </html>

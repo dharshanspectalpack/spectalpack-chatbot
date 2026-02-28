@@ -729,31 +729,33 @@ body {
 }
 
 /* ============================================
-           WELCOME CARD (Quick actions on open)
+           WELCOME CARD (above the input bar)
    ============================================ */
 .welcome-card {
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-top: 1px solid #bbf7d0;
   border-bottom: 1px solid #bbf7d0;
-  padding: 12px 15px;
+  padding: 10px 15px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 7px;
+  transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease;
   overflow: hidden;
-  max-height: 100px;
+  max-height: 90px;
+  opacity: 1;
   flex-shrink: 0;
 }
 
 .welcome-card.hidden {
   max-height: 0;
-  padding: 0 15px;
   opacity: 0;
-  border-bottom: none;
+  padding: 0 15px;
+  border: none;
   pointer-events: none;
 }
 
 .welcome-card-title {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: #166534;
 }
@@ -790,13 +792,11 @@ body {
 
 .welcome-cta-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   opacity: 0.92;
 }
 
-.wc-icon {
-  font-size: 14px;
-}
+.wc-icon { font-size: 14px; }
 
 /* ============================================
          QUICK ACTION BUTTONS (left of input)
@@ -805,6 +805,15 @@ body {
   display: flex;
   gap: 6px;
   margin-bottom: 8px;
+  transition: all 0.3s ease;
+  max-height: 40px;
+  overflow: hidden;
+  opacity: 1;
+}
+
+/* Hidden by default — appears only after user starts typing */
+.quick-action-row.hidden {
+  display: none;
 }
 
 .quick-action-btn {
@@ -830,9 +839,7 @@ body {
   transform: translateY(-1px);
 }
 
-.qa-label {
-  font-size: 11px;
-}
+.qa-label { font-size: 11px; }
 
 /* ============================================
              FORM PANEL OVERLAY
