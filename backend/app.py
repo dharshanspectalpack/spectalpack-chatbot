@@ -133,7 +133,7 @@ def set_security_headers(response):
 # Gemini API configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-2.0-flash"
 
 @app.route('/')
 def home():

@@ -19,28 +19,39 @@ dbconfig = {
     "autocommit": True,
 }
 
-try:
-    connection_pool = mysql.connector.pooling.MySQLConnectionPool(
-        pool_name="spectalpack_pool",
-        pool_size=5,
-        pool_reset_session=True,
-        **dbconfig
-    )
-except Error as e:
-    print(f"[ERROR] Failed to create connection pool: {e}")
-    connection_pool = None
+_connection_pool = None
+
+def _get_pool():
+    """Lazily initialize the connection pool on first use."""
+    global _connection_pool
+    if _connection_pool is not None:
+        return _connection_pool
+    try:
+        _connection_pool = mysql.connector.pooling.MySQLConnectionPool(
+            pool_name="spectalpack_pool",
+            pool_size=5,
+            pool_reset_session=True,
+            **dbconfig
+        )
+        print("[OK] MySQL connection pool created")
+    except Error as e:
+        print(f"[ERROR] Failed to create connection pool: {e}")
+        _connection_pool = None
+    return _connection_pool
 
 def get_connection():
     """Get Railway MySQL connection from pool"""
     try:
-        if connection_pool:
-            return connection_pool.get_connection()
+        pool = _get_pool()
+        if pool:
+            return pool.get_connection()
         else:
-            # Fallback if pool failed
+            # Fallback direct connection if pool failed
             return mysql.connector.connect(**dbconfig)
     except Error as e:
         print(f"[ERROR] MySQL Connection Error: {e}")
         return None
+
 
 def init_db():
     """Create tables automatically on first run"""
