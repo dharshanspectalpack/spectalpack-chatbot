@@ -230,11 +230,19 @@ body {
   transform: scale(1) translateY(0);
 }
 
-.chat-avatar.hidden {
-  opacity: 0;
-  transform: scale(0.8);
-  pointer-events: none;
-  animation: none;
+/* Avatar in "minimize" state — chat is currently open */
+.chat-avatar.chat-open {
+  background: linear-gradient(145deg, #2e7d32 0%, #1b5e20 100%);
+  box-shadow:
+    0 6px 24px rgba(46, 125, 50, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  transform: scale(0.92) rotate(10deg) !important;
+  animation: none !important;
+}
+
+.chat-avatar.chat-open:hover {
+  transform: scale(1.0) rotate(10deg) !important;
 }
 
 .chat-avatar:hover {
@@ -246,9 +254,7 @@ body {
   animation-play-state: paused;
 }
 
-.chat-avatar.hidden:hover {
-  transform: scale(0.8) !important;
-}
+
 
 .chat-avatar img {
   width: 88%;

@@ -134,15 +134,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }, 950);
 
-  // Avatar click: toggle chat
+  // Avatar click: toggle chat open/minimize
   chatAvatar.addEventListener("click", function (e) {
     e.stopPropagation();
     chatContainer.classList.toggle("open");
 
     // if opening chat
     if (chatContainer.classList.contains("open")) {
-      chatAvatar.classList.add("hidden");
-      chatAvatar.classList.remove("float-idle"); // pause float while hidden
+      chatAvatar.classList.add("chat-open"); // mark as active/minimize state
+      chatAvatar.classList.remove("float-idle"); // pause float while chat is open
 
       // Close typing animation popup immediately
       const typingPopup = document.getElementById("typingPopup");
@@ -156,13 +156,11 @@ document.addEventListener("DOMContentLoaded", function () {
         userInput.focus();
       }, 100);
     } else {
-      // Close the chat
-      chatAvatar.classList.remove("hidden"); // Show avatar
-      // Resume gentle float after reappearing
+      // Minimizing chat
+      chatAvatar.classList.remove("chat-open");
+      // Resume gentle float
       setTimeout(() => {
-        if (!chatAvatar.classList.contains("hidden")) {
-          chatAvatar.classList.add("float-idle");
-        }
+        chatAvatar.classList.add("float-idle");
       }, 400);
     }
   });
@@ -171,11 +169,9 @@ document.addEventListener("DOMContentLoaded", function () {
   closeBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     chatContainer.classList.remove("open");
-    chatAvatar.classList.remove("hidden"); // Show avatar
+    chatAvatar.classList.remove("chat-open");
     setTimeout(() => {
-      if (!chatAvatar.classList.contains("hidden")) {
-        chatAvatar.classList.add("float-idle");
-      }
+      chatAvatar.classList.add("float-idle");
     }, 400);
   });
 
@@ -257,7 +253,8 @@ document.addEventListener("DOMContentLoaded", function () {
       !document.getElementById("quotationPanel").contains(e.target)
     ) {
       chatContainer.classList.remove("open");
-      chatAvatar.classList.remove("hidden"); // Show avatar
+      chatAvatar.classList.remove("chat-open");
+      chatAvatar.classList.add("float-idle");
     }
   });
 
