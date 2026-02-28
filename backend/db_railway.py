@@ -145,6 +145,17 @@ def init_db():
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ''')
 
+    # Migration: make company nullable on both tables
+    # (handles tables already created with NOT NULL before this fix)
+    for tbl in ('sample_kit_requests', 'quotation_requests'):
+        try:
+            cursor.execute(f'''
+                ALTER TABLE {tbl}
+                MODIFY COLUMN company VARCHAR(255) NULL DEFAULT ''
+            ''')
+        except Exception:
+            pass  # Already nullable or column doesn't exist yet — safe to ignore
+
     connection.commit()  # Ensure all DDL changes are committed
     cursor.close()
     connection.close()

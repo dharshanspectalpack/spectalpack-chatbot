@@ -583,30 +583,32 @@ def submit_sample_kit():
     """Public: Accept a sample kit request from the chatbot widget."""
     try:
         data = request.get_json(silent=True) or {}
-        name    = str(data.get('name', '')).strip()[:255]
-        company = str(data.get('company', '')).strip()[:255]
-        email   = str(data.get('email', '')).strip()[:255]
-        phone   = str(data.get('phone', '')).strip()[:50]
+        name     = str(data.get('name', '')).strip()[:255]
+        company  = str(data.get('company', '')).strip()[:255]
+        email    = str(data.get('email', '')).strip()[:255]
+        phone    = str(data.get('phone', '')).strip()[:50]
+        products = str(data.get('products', '')).strip()[:1000]
+        quantity = str(data.get('quantity', '')).strip()[:100]
         address  = str(data.get('address', '')).strip()[:1000]
 
-        if not all([name, company, email]):
-            return jsonify({'success': False, 'error': 'Name, company, and email are required.'}), 400
+        if not name or not email:
+            return jsonify({'success': False, 'error': 'Name and email are required.'}), 400
         if not re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
             return jsonify({'success': False, 'error': 'Invalid email format.'}), 400
 
-        kit_id = db.save_sample_kit(name, company, email, phone, address)
+        kit_id = db.save_sample_kit(name, company, email, phone, products, quantity, address)
         if kit_id:
             try:
                 db.create_notification(
                     "New Sample Kit Request",
-                    f"{name} from {company} ({email}) submitted a sample kit request.",
+                    f"{name} from {company or 'an individual'} ({email}) submitted a sample kit request.",
                     "sample_kit"
                 )
             except Exception:
                 pass
             return jsonify({'success': True, 'id': kit_id, 'message': 'Sample kit request received!'}), 201
         else:
-            return jsonify({'success': False, 'error': 'Failed to save request.'}), 500
+            return jsonify({'success': False, 'error': 'Failed to save request. Please try again.'}), 500
     except Exception as e:
         print(f"[ERROR] in submit_sample_kit: {str(e)}")
         return jsonify({'success': False, 'error': 'Internal server error.'}), 500
