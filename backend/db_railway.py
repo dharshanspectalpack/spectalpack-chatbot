@@ -531,6 +531,7 @@ def save_sample_kit(name, company, email, phone, products, quantity, address):
                VALUES (%s, %s, %s, %s, %s, %s, %s)''',
             (name, company, email, phone, products, quantity, address)
         )
+        connection.commit()  # Persist the record
         return cursor.lastrowid
     except Error as e:
         print(f"[ERROR] Failed to save sample kit request: {e}")
@@ -601,6 +602,7 @@ def save_quotation(name, company, email, phone, product_type, size, material, qu
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
             (name, company, email, phone, product_type, size, material, quantity, timeline, notes)
         )
+        connection.commit()  # Persist the record
         return cursor.lastrowid
     except Error as e:
         print(f"[ERROR] Failed to save quotation: {e}")

@@ -908,8 +908,8 @@ async function submitSampleKit(event) {
     address:  document.getElementById("sk-address").value.trim(),
   };
 
-  if (!payload.name || !payload.company || !payload.email) {
-    errorDiv.textContent = "Name, company and email are required.";
+  if (!payload.name || !payload.email) {
+    errorDiv.textContent = "Name and email are required.";
     errorDiv.style.display = "block";
     return;
   }
