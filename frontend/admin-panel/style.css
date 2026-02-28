@@ -626,3 +626,57 @@ body {
   color: var(--text-muted);
   font-size: 0.9rem;
 }
+
+/* ==================== SUBMISSIONS TABLE (Sample Kits & Quotations) ==================== */
+.submissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: var(--bg-surface);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.submissions-table thead {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  color: white;
+}
+
+.submissions-table thead th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.submissions-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+}
+
+.submissions-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.submissions-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.submissions-table tbody td {
+  padding: 0.875rem 1rem;
+  color: var(--text-main);
+  vertical-align: top;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.submissions-table .icon-btn {
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}

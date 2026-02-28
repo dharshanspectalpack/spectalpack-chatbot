@@ -40,7 +40,7 @@
 
       </div>
 
-      <!-- Sidebar: User List -->
+      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-header" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
           <div style="display:flex; justify-content: space-between; width: 100%; align-items: center;">
@@ -50,9 +50,14 @@
           </div>
           <nav class="sidebar-nav" style="width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
             <button id="nav-leads" class="nav-btn active" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f1f5f9; color: #0f172a; font-weight: 600; border-radius: 4px; cursor: pointer;">
-              <i class="fas fa-users" style="margin-right: 8px;"></i> Leads & Chats
+              <i class="fas fa-users" style="margin-right: 8px;"></i> Leads &amp; Chats
             </button>
-
+            <button id="nav-sample-kits" class="nav-btn" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: transparent; color: #0f172a; font-weight: 600; border-radius: 4px; cursor: pointer;">
+              <i class="fas fa-box" style="margin-right: 8px; color: #16a34a;"></i> Sample Kits
+            </button>
+            <button id="nav-quotations" class="nav-btn" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: transparent; color: #0f172a; font-weight: 600; border-radius: 4px; cursor: pointer;">
+              <i class="fas fa-file-invoice" style="margin-right: 8px; color: #1d4ed8;"></i> Quotations
+            </button>
           </nav>
         </div>
         
@@ -69,7 +74,7 @@
         </div>
       </aside>
 
-      <!-- Main Content Area: Leads & Chats (Default View) -->
+      <!-- Main Content: Leads & Chats (Default View) -->
       <main class="main-content" id="main-leads" style="display: flex;">
         <!-- Header for selected user -->
         <header class="content-header" id="content-header">
@@ -103,8 +108,75 @@
           <p>Select a lead from the sidebar to view their sessions.</p>
         </div>
       </main>
+
+      <!-- Main Content: Sample Kits -->
+      <main class="main-content" id="main-sample-kits" style="display: none; flex-direction: column;">
+        <header class="content-header">
+          <div class="header-info">
+            <h2><i class="fas fa-box" style="color:#16a34a; margin-right:8px;"></i>Sample Kit Requests</h2>
+            <p id="sample-kits-count">Loading...</p>
+          </div>
+          <button id="refresh-sample-kits-btn" class="icon-btn" title="Refresh" style="margin-left:auto;">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </header>
+        <div style="flex:1; overflow:auto; padding:1rem;">
+          <table class="submissions-table" id="sample-kits-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Products</th>
+                <th>Quantity</th>
+                <th>Address</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="sample-kits-tbody">
+              <tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:2rem;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+      <!-- Main Content: Quotations -->
+      <main class="main-content" id="main-quotations" style="display: none; flex-direction: column;">
+        <header class="content-header">
+          <div class="header-info">
+            <h2><i class="fas fa-file-invoice" style="color:#1d4ed8; margin-right:8px;"></i>Quotation Requests</h2>
+            <p id="quotations-count">Loading...</p>
+          </div>
+          <button id="refresh-quotations-btn" class="icon-btn" title="Refresh" style="margin-left:auto;">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </header>
+        <div style="flex:1; overflow:auto; padding:1rem;">
+          <table class="submissions-table" id="quotations-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Product Type</th>
+                <th>Qty</th>
+                <th>Timeline</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="quotations-tbody">
+              <tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:2rem;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+
     </div>
 
     <script src="/admin/script.js"></script>  </body>
 </html>
-

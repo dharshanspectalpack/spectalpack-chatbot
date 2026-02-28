@@ -111,7 +111,40 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ''')
-    
+
+    # Create sample_kit_requests table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sample_kit_requests (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            company VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone VARCHAR(50),
+            products TEXT,
+            quantity VARCHAR(100),
+            address TEXT,
+            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ''')
+
+    # Create quotation_requests table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS quotation_requests (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            company VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone VARCHAR(50),
+            product_type VARCHAR(255),
+            size_dimensions VARCHAR(255),
+            material VARCHAR(255),
+            quantity VARCHAR(100),
+            timeline VARCHAR(100),
+            notes TEXT,
+            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ''')
+
     cursor.close()
     connection.close()
     print("[OK] Database tables ready")
@@ -467,6 +500,147 @@ def create_notification(title, message, type):
             cursor.close()
         if connection:
             connection.close()
+
+# ============================================================
+# SAMPLE KIT FUNCTIONS
+# ============================================================
+
+def save_sample_kit(name, company, email, phone, products, quantity, address):
+    """Save a sample kit request submission."""
+    connection = get_connection()
+    if not connection:
+        return None
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute(
+            '''INSERT INTO sample_kit_requests
+               (name, company, email, phone, products, quantity, address)
+               VALUES (%s, %s, %s, %s, %s, %s, %s)''',
+            (name, company, email, phone, products, quantity, address)
+        )
+        return cursor.lastrowid
+    except Error as e:
+        print(f"[ERROR] Failed to save sample kit request: {e}")
+        return None
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
+
+def get_all_sample_kits():
+    """Admin: Get all sample kit requests ordered by most recent."""
+    connection = get_connection()
+    if not connection:
+        return []
+    cursor = None
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            '''SELECT id, name, company, email, phone, products, quantity, address, submitted_at
+               FROM sample_kit_requests ORDER BY submitted_at DESC LIMIT 5000'''
+        )
+        rows = cursor.fetchall()
+        for r in rows:
+            if r.get('submitted_at'):
+                r['submitted_at'] = r['submitted_at'].isoformat()
+        return rows
+    except Error as e:
+        print(f"[ERROR] Failed to fetch sample kits: {e}")
+        return []
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
+
+def delete_sample_kit(kit_id):
+    """Admin: Delete a sample kit request."""
+    connection = get_connection()
+    if not connection:
+        return False
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM sample_kit_requests WHERE id = %s", (kit_id,))
+        return cursor.rowcount > 0
+    except Error as e:
+        print(f"[ERROR] Failed to delete sample kit: {e}")
+        return False
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
+
+# ============================================================
+# QUOTATION FUNCTIONS
+# ============================================================
+
+def save_quotation(name, company, email, phone, product_type, size, material, quantity, timeline, notes):
+    """Save a quotation request submission."""
+    connection = get_connection()
+    if not connection:
+        return None
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute(
+            '''INSERT INTO quotation_requests
+               (name, company, email, phone, product_type, size_dimensions, material, quantity, timeline, notes)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+            (name, company, email, phone, product_type, size, material, quantity, timeline, notes)
+        )
+        return cursor.lastrowid
+    except Error as e:
+        print(f"[ERROR] Failed to save quotation: {e}")
+        return None
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
+
+def get_all_quotations():
+    """Admin: Get all quotation requests ordered by most recent."""
+    connection = get_connection()
+    if not connection:
+        return []
+    cursor = None
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            '''SELECT id, name, company, email, phone, product_type, size_dimensions,
+                      material, quantity, timeline, notes, submitted_at
+               FROM quotation_requests ORDER BY submitted_at DESC LIMIT 5000'''
+        )
+        rows = cursor.fetchall()
+        for r in rows:
+            if r.get('submitted_at'):
+                r['submitted_at'] = r['submitted_at'].isoformat()
+        return rows
+    except Error as e:
+        print(f"[ERROR] Failed to fetch quotations: {e}")
+        return []
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
+
+def delete_quotation(quot_id):
+    """Admin: Delete a quotation request."""
+    connection = get_connection()
+    if not connection:
+        return False
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM quotation_requests WHERE id = %s", (quot_id,))
+        return cursor.rowcount > 0
+    except Error as e:
+        print(f"[ERROR] Failed to delete quotation: {e}")
+        return False
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
 
 if __name__ == '__main__':
     init_db()

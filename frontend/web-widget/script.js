@@ -205,12 +205,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // ---- Quick Action Buttons (left of input) ----
+  const quickSampleKitBtn = document.getElementById("quickSampleKitBtn");
+  const quickQuotationBtn = document.getElementById("quickQuotationBtn");
+  if (quickSampleKitBtn) quickSampleKitBtn.addEventListener("click", (e) => { e.stopPropagation(); openSampleKitPanel(); });
+  if (quickQuotationBtn) quickQuotationBtn.addEventListener("click", (e) => { e.stopPropagation(); openQuotationPanel(); });
+
+  // ---- Welcome Card CTA Buttons ----
+  const welcomeSampleKitBtn = document.getElementById("welcomeSampleKitBtn");
+  const welcomeQuotationBtn = document.getElementById("welcomeQuotationBtn");
+  if (welcomeSampleKitBtn) welcomeSampleKitBtn.addEventListener("click", (e) => { e.stopPropagation(); hideWelcomeCard(); openSampleKitPanel(); });
+  if (welcomeQuotationBtn) welcomeQuotationBtn.addEventListener("click", (e) => { e.stopPropagation(); hideWelcomeCard(); openQuotationPanel(); });
+
+  // ---- Hide welcome card when user starts typing ----
+  userInput.addEventListener("input", hideWelcomeCard);
+
+  // ---- Close form panels ----
+  const closeSampleKitPanel = document.getElementById("closeSampleKitPanel");
+  const closeQuotationPanel = document.getElementById("closeQuotationPanel");
+  const formPanelOverlay = document.getElementById("formPanelOverlay");
+  if (closeSampleKitPanel) closeSampleKitPanel.addEventListener("click", () => closeSampleKitPanelFn());
+  if (closeQuotationPanel) closeQuotationPanel.addEventListener("click", () => closeQuotationPanelFn());
+  if (formPanelOverlay) formPanelOverlay.addEventListener("click", () => { closeSampleKitPanelFn(); closeQuotationPanelFn(); });
+
   // Click outside chat to close
   document.addEventListener("click", function (e) {
     if (
       chatContainer.classList.contains("open") &&
       !chatContainer.contains(e.target) &&
-      !chatAvatar.contains(e.target)
+      !chatAvatar.contains(e.target) &&
+      !document.getElementById("sampleKitPanel").contains(e.target) &&
+      !document.getElementById("quotationPanel").contains(e.target)
     ) {
       chatContainer.classList.remove("open");
       chatAvatar.classList.remove("hidden"); // Show avatar
@@ -798,7 +823,188 @@ function clearChat() {
     "Are you sure you want to clear the chat history? This action cannot be undone.",
   );
 
-  if (confirmed) {
-    refreshChat();
+  if (!confirmed) return;
+
+  // Clear chat history from memory
+  chatHistory = [];
+  localStorage.removeItem("userInfo");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("sessionId");
+  userInfo = null;
+
+  const chatMessages = document.getElementById("chatMessages");
+  if (chatMessages) chatMessages.innerHTML = "";
+
+  addWelcomeMessage();
+}
+
+// ============================================
+// WELCOME CARD
+// ============================================
+let welcomeCardHidden = false;
+
+function hideWelcomeCard() {
+  if (welcomeCardHidden) return;
+  welcomeCardHidden = true;
+  const card = document.getElementById("welcomeCard");
+  if (card) {
+    card.classList.add("hidden");
   }
 }
+
+function showWelcomeCard() {
+  welcomeCardHidden = false;
+  const card = document.getElementById("welcomeCard");
+  if (card) {
+    card.classList.remove("hidden");
+  }
+}
+
+// ============================================
+// SAMPLE KIT PANEL
+// ============================================
+function openSampleKitPanel() {
+  const panel = document.getElementById("sampleKitPanel");
+  const overlay = document.getElementById("formPanelOverlay");
+  if (panel) panel.classList.add("open");
+  if (overlay) overlay.classList.add("visible");
+}
+
+function closeSampleKitPanelFn() {
+  const panel = document.getElementById("sampleKitPanel");
+  const overlay = document.getElementById("formPanelOverlay");
+  if (panel) panel.classList.remove("open");
+  // Only hide overlay if both panels are closed
+  const quotPanel = document.getElementById("quotationPanel");
+  if (overlay && !quotPanel.classList.contains("open")) overlay.classList.remove("visible");
+}
+
+async function submitSampleKit(event) {
+  event.preventDefault();
+  const btn = document.getElementById("sk-submit-btn");
+  const errorDiv = document.getElementById("sk-error");
+  errorDiv.style.display = "none";
+
+  // Collect selected products
+  const checkedProducts = Array.from(
+    document.querySelectorAll('#sampleKitForm input[name="products"]:checked')
+  ).map(cb => cb.value).join(", ");
+
+  const payload = {
+    name:     document.getElementById("sk-name").value.trim(),
+    company:  document.getElementById("sk-company").value.trim(),
+    email:    document.getElementById("sk-email").value.trim(),
+    phone:    document.getElementById("sk-phone").value.trim(),
+    products: checkedProducts,
+    quantity: document.getElementById("sk-quantity").value.trim(),
+    address:  document.getElementById("sk-address").value.trim(),
+  };
+
+  if (!payload.name || !payload.company || !payload.email) {
+    errorDiv.textContent = "Name, company and email are required.";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span>Sending...</span>';
+
+  try {
+    const res = await fetch(`${API_BASE}/sample-kit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeSampleKitPanelFn();
+      document.getElementById("sampleKitForm").reset();
+      addMessage(
+        `✅ **Sample Kit Request Received!**\n\nThank you ${payload.name}! We've received your sample kit request and will ship it to you shortly. Our team will contact you at **${payload.email}** to confirm details.`,
+        "bot"
+      );
+    } else {
+      errorDiv.textContent = data.error || "Failed to submit. Please try again.";
+      errorDiv.style.display = "block";
+    }
+  } catch (err) {
+    errorDiv.textContent = "Network error. Please try again.";
+    errorDiv.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Send Sample Kit Request</span>';
+  }
+}
+
+// ============================================
+// QUOTATION PANEL
+// ============================================
+function openQuotationPanel() {
+  const panel = document.getElementById("quotationPanel");
+  const overlay = document.getElementById("formPanelOverlay");
+  if (panel) panel.classList.add("open");
+  if (overlay) overlay.classList.add("visible");
+}
+
+function closeQuotationPanelFn() {
+  const panel = document.getElementById("quotationPanel");
+  const overlay = document.getElementById("formPanelOverlay");
+  if (panel) panel.classList.remove("open");
+  const kitPanel = document.getElementById("sampleKitPanel");
+  if (overlay && !kitPanel.classList.contains("open")) overlay.classList.remove("visible");
+}
+
+async function submitQuotation(event) {
+  event.preventDefault();
+  const btn = document.getElementById("qt-submit-btn");
+  const errorDiv = document.getElementById("qt-error");
+  errorDiv.style.display = "none";
+
+  const payload = {
+    name:         document.getElementById("qt-name").value.trim(),
+    company:      document.getElementById("qt-company").value.trim(),
+    email:        document.getElementById("qt-email").value.trim(),
+    phone:        document.getElementById("qt-phone").value.trim(),
+    product_type: document.getElementById("qt-product-type").value,
+    size:         document.getElementById("qt-size").value.trim(),
+    material:     document.getElementById("qt-material").value,
+    quantity:     document.getElementById("qt-quantity").value.trim(),
+    timeline:     document.getElementById("qt-timeline").value,
+    notes:        document.getElementById("qt-notes").value.trim(),
+  };
+
+  if (!payload.name || !payload.company || !payload.email) {
+    errorDiv.textContent = "Name, company and email are required.";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span>Sending...</span>';
+
+  try {
+    const res = await fetch(`${API_BASE}/quotation`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeQuotationPanelFn();
+      document.getElementById("quotationForm").reset();
+      addMessage(
+        `✅ **Quotation Request Received!**\n\nThank you ${payload.name}! We've received your quotation request for **${payload.product_type || 'packaging'}**. Our sales team will prepare a custom quote and contact you at **${payload.email}** within 24 hours.`,
+        "bot"
+      );
+    } else {
+      errorDiv.textContent = data.error || "Failed to submit. Please try again.";
+      errorDiv.style.display = "block";
+    }
+  } catch (err) {
+    errorDiv.textContent = "Network error. Please try again.";
+    errorDiv.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Send Quotation Request</span>';
+
+  }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spectal Pack - AI Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=3" />
   </head>
 
   <body>
@@ -57,6 +57,22 @@
           <span class="dropdown-text">Clear Chat</span>
         </button>
       </div>
+
+      <!-- Welcome Action Card (shown on open, hidden when user types) -->
+      <div class="welcome-card" id="welcomeCard">
+        <p class="welcome-card-title">👋 Hi there! Quick actions:</p>
+        <div class="welcome-card-btns">
+          <button class="welcome-cta-btn sample-kit-cta" id="welcomeSampleKitBtn">
+            <span class="wc-icon">📦</span>
+            <span>Request Sample Kit</span>
+          </button>
+          <button class="welcome-cta-btn quotation-cta" id="welcomeQuotationBtn">
+            <span class="wc-icon">💬</span>
+            <span>Get a Quotation</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Chat Messages Area -->
       <div class="chat-messages" id="chatMessages">
         <!-- Messages will be added here dynamically -->
@@ -64,6 +80,15 @@
 
       <!-- Input Area -->
       <div class="chat-input">
+        <!-- Quick Action Buttons (left of input) -->
+        <div class="quick-action-row">
+          <button class="quick-action-btn" id="quickSampleKitBtn" title="Request Sample Kit">
+            <span>📦</span><span class="qa-label">Sample Kit</span>
+          </button>
+          <button class="quick-action-btn" id="quickQuotationBtn" title="Get a Quotation">
+            <span>💬</span><span class="qa-label">Get Quote</span>
+          </button>
+        </div>
         <div class="input-container">
           <input
             type="text"
@@ -93,8 +118,107 @@
       </div>
     </div>
 
+    <!-- ===== SAMPLE KIT FORM PANEL ===== -->
+    <div class="form-panel" id="sampleKitPanel">
+      <div class="form-panel-header">
+        <h3>📦 Request a Sample Kit</h3>
+        <button class="form-panel-close" id="closeSampleKitPanel">✕</button>
+      </div>
+      <div class="form-panel-body">
+        <form id="sampleKitForm" onsubmit="submitSampleKit(event)">
+          <div class="form-row">
+            <input type="text" id="sk-name" placeholder="Your Name *" required maxlength="100" />
+            <input type="text" id="sk-company" placeholder="Company Name *" required maxlength="150" />
+          </div>
+          <div class="form-row">
+            <input type="email" id="sk-email" placeholder="Email Address *" required maxlength="255" />
+            <input type="tel" id="sk-phone" placeholder="Phone Number" maxlength="20" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Products Interested In</label>
+            <div class="checkbox-grid">
+              <label class="cb-item"><input type="checkbox" name="products" value="Stand-Up Pouches" /> Stand-Up Pouches</label>
+              <label class="cb-item"><input type="checkbox" name="products" value="Flat Pouches" /> Flat Pouches</label>
+              <label class="cb-item"><input type="checkbox" name="products" value="Sachets" /> Sachets</label>
+              <label class="cb-item"><input type="checkbox" name="products" value="Roll Stock" /> Roll Stock</label>
+              <label class="cb-item"><input type="checkbox" name="products" value="Labels" /> Labels</label>
+              <label class="cb-item"><input type="checkbox" name="products" value="Other" /> Other</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <input type="text" id="sk-quantity" placeholder="Approx. Quantity Needed" maxlength="100" />
+          </div>
+          <textarea id="sk-address" placeholder="Delivery Address" rows="2" maxlength="500"></textarea>
+          <div id="sk-error" class="form-error" style="display:none;"></div>
+          <button type="submit" class="form-submit-btn" id="sk-submit-btn">
+            <span>Send Sample Kit Request</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== QUOTATION FORM PANEL ===== -->
+    <div class="form-panel" id="quotationPanel">
+      <div class="form-panel-header">
+        <h3>💬 Request a Quotation</h3>
+        <button class="form-panel-close" id="closeQuotationPanel">✕</button>
+      </div>
+      <div class="form-panel-body">
+        <form id="quotationForm" onsubmit="submitQuotation(event)">
+          <div class="form-row">
+            <input type="text" id="qt-name" placeholder="Your Name *" required maxlength="100" />
+            <input type="text" id="qt-company" placeholder="Company Name *" required maxlength="150" />
+          </div>
+          <div class="form-row">
+            <input type="email" id="qt-email" placeholder="Email Address *" required maxlength="255" />
+            <input type="tel" id="qt-phone" placeholder="Phone Number" maxlength="20" />
+          </div>
+          <div class="form-row">
+            <select id="qt-product-type">
+              <option value="">Select Product Type</option>
+              <option>Stand-Up Pouches</option>
+              <option>Flat Pouches</option>
+              <option>Sachets</option>
+              <option>Roll Stock</option>
+              <option>Labels</option>
+              <option>Other</option>
+            </select>
+            <input type="text" id="qt-size" placeholder="Size / Dimensions" maxlength="100" />
+          </div>
+          <div class="form-row">
+            <select id="qt-material">
+              <option value="">Material Preference</option>
+              <option>PET/PE (Standard)</option>
+              <option>Kraft Paper</option>
+              <option>Mono-Material (All PE)</option>
+              <option>Aluminium Foil Laminate</option>
+              <option>Not Sure</option>
+            </select>
+            <input type="text" id="qt-quantity" placeholder="Quantity Required" maxlength="100" />
+          </div>
+          <div class="form-row">
+            <select id="qt-timeline">
+              <option value="">Timeline / Urgency</option>
+              <option>ASAP (Rush order)</option>
+              <option>Within 2 weeks</option>
+              <option>Within 1 month</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          <textarea id="qt-notes" placeholder="Special requirements or notes..." rows="2" maxlength="1000"></textarea>
+          <div id="qt-error" class="form-error" style="display:none;"></div>
+          <button type="submit" class="form-submit-btn quotation-submit" id="qt-submit-btn">
+            <span>Send Quotation Request</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Overlay backdrop for form panels -->
+    <div class="form-panel-overlay" id="formPanelOverlay"></div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>

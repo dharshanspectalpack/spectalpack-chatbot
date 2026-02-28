@@ -575,6 +575,131 @@ def admin_mark_notification_read(notif_id):
         print(f"[ERROR] in admin_mark_notification_read: {str(e)}")
         return jsonify({"success": False, "error": "Failed to update notification. Contact support."}), 500
 
+# ==================== SAMPLE KIT & QUOTATION ENDPOINTS ====================
+
+@app.route('/api/sample-kit', methods=['POST'])
+@limiter.limit("10 per minute")
+def submit_sample_kit():
+    """Public: Accept a sample kit request from the chatbot widget."""
+    try:
+        data = request.get_json(silent=True) or {}
+        name    = str(data.get('name', '')).strip()[:255]
+        company = str(data.get('company', '')).strip()[:255]
+        email   = str(data.get('email', '')).strip()[:255]
+        phone   = str(data.get('phone', '')).strip()[:50]
+        address  = str(data.get('address', '')).strip()[:1000]
+
+        if not all([name, company, email]):
+            return jsonify({'success': False, 'error': 'Name, company, and email are required.'}), 400
+        if not re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
+            return jsonify({'success': False, 'error': 'Invalid email format.'}), 400
+
+        kit_id = db.save_sample_kit(name, company, email, phone, address)
+        if kit_id:
+            try:
+                db.create_notification(
+                    "New Sample Kit Request",
+                    f"{name} from {company} ({email}) submitted a sample kit request.",
+                    "sample_kit"
+                )
+            except Exception:
+                pass
+            return jsonify({'success': True, 'id': kit_id, 'message': 'Sample kit request received!'}), 201
+        else:
+            return jsonify({'success': False, 'error': 'Failed to save request.'}), 500
+    except Exception as e:
+        print(f"[ERROR] in submit_sample_kit: {str(e)}")
+        return jsonify({'success': False, 'error': 'Internal server error.'}), 500
+
+
+@app.route('/api/quotation', methods=['POST'])
+@limiter.limit("10 per minute")
+def submit_quotation():
+    """Public: Accept a quotation request from the chatbot widget."""
+    try:
+        data = request.get_json(silent=True) or {}
+        name         = str(data.get('name', '')).strip()[:255]
+        company      = str(data.get('company', '')).strip()[:255]
+        email        = str(data.get('email', '')).strip()[:255]
+        phone        = str(data.get('phone', '')).strip()[:50]
+        product_type = str(data.get('product_type', '')).strip()[:255]
+        size         = str(data.get('size', '')).strip()[:255]
+        material     = str(data.get('material', '')).strip()[:255]
+        quantity     = str(data.get('quantity', '')).strip()[:100]
+        timeline     = str(data.get('timeline', '')).strip()[:100]
+        notes        = str(data.get('notes', '')).strip()[:2000]
+
+        if not all([name, company, email]):
+            return jsonify({'success': False, 'error': 'Name, company, and email are required.'}), 400
+        if not re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
+            return jsonify({'success': False, 'error': 'Invalid email format.'}), 400
+
+        quot_id = db.save_quotation(name, company, email, phone, product_type, size, material, quantity, timeline, notes)
+        if quot_id:
+            try:
+                db.create_notification(
+                    "New Quotation Request",
+                    f"{name} from {company} ({email}) submitted a quotation request for {product_type or 'packaging'}.",
+                    "quotation"
+                )
+            except Exception:
+                pass
+            return jsonify({'success': True, 'id': quot_id, 'message': 'Quotation request received!'}), 201
+        else:
+            return jsonify({'success': False, 'error': 'Failed to save request.'}), 500
+    except Exception as e:
+        print(f"[ERROR] in submit_quotation: {str(e)}")
+        return jsonify({'success': False, 'error': 'Internal server error.'}), 500
+
+
+@app.route('/api/admin/sample-kits', methods=['GET'])
+def admin_get_sample_kits():
+    """Admin: Fetch all sample kit requests."""
+    try:
+        kits = db.get_all_sample_kits()
+        return jsonify({"success": True, "sample_kits": kits}), 200
+    except Exception as e:
+        print(f"[ERROR] in admin_get_sample_kits: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to fetch sample kits."}), 500
+
+
+@app.route('/api/admin/sample-kits/<int:kit_id>', methods=['DELETE'])
+def admin_delete_sample_kit(kit_id):
+    """Admin: Delete a sample kit request."""
+    try:
+        success = db.delete_sample_kit(kit_id)
+        if success:
+            return jsonify({"success": True, "message": "Sample kit deleted."}), 200
+        return jsonify({"success": False, "error": "Not found."}), 404
+    except Exception as e:
+        print(f"[ERROR] in admin_delete_sample_kit: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to delete."}), 500
+
+
+@app.route('/api/admin/quotations', methods=['GET'])
+def admin_get_quotations():
+    """Admin: Fetch all quotation requests."""
+    try:
+        quotations = db.get_all_quotations()
+        return jsonify({"success": True, "quotations": quotations}), 200
+    except Exception as e:
+        print(f"[ERROR] in admin_get_quotations: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to fetch quotations."}), 500
+
+
+@app.route('/api/admin/quotations/<int:quot_id>', methods=['DELETE'])
+def admin_delete_quotation(quot_id):
+    """Admin: Delete a quotation request."""
+    try:
+        success = db.delete_quotation(quot_id)
+        if success:
+            return jsonify({"success": True, "message": "Quotation deleted."}), 200
+        return jsonify({"success": False, "error": "Not found."}), 404
+    except Exception as e:
+        print(f"[ERROR] in admin_delete_quotation: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to delete."}), 500
+
+
 # ==================== STATIC FILE SERVING ====================
 
 @app.route('/admin')

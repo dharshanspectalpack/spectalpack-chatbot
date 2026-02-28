@@ -49,14 +49,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // --- Navigation --- //
-navLeads.addEventListener("click", () => {
-    navLeads.classList.add("active");
-    navLeads.style.background = "#f1f5f9";
-    navLeads.style.color = "#0f172a";
+const navSampleKits = document.getElementById("nav-sample-kits");
+const navQuotations = document.getElementById("nav-quotations");
+const mainSampleKits = document.getElementById("main-sample-kits");
+const mainQuotations = document.getElementById("main-quotations");
 
+function setActiveNav(activeBtn) {
+    [navLeads, navSampleKits, navQuotations].forEach(btn => {
+        if (!btn) return;
+        btn.classList.remove("active");
+        btn.style.background = "transparent";
+    });
+    activeBtn.classList.add("active");
+    activeBtn.style.background = "#f1f5f9";
+}
+
+navLeads.addEventListener("click", () => {
+    setActiveNav(navLeads);
     mainLeads.style.display = "flex";
+    if (mainSampleKits) mainSampleKits.style.display = "none";
+    if (mainQuotations) mainQuotations.style.display = "none";
     leadsSidebarContent.style.display = "flex";
 });
+
+if (navSampleKits) {
+    navSampleKits.addEventListener("click", () => {
+        setActiveNav(navSampleKits);
+        mainLeads.style.display = "none";
+        mainSampleKits.style.display = "flex";
+        if (mainQuotations) mainQuotations.style.display = "none";
+        leadsSidebarContent.style.display = "none";
+        loadSampleKits();
+    });
+}
+
+if (navQuotations) {
+    navQuotations.addEventListener("click", () => {
+        setActiveNav(navQuotations);
+        mainLeads.style.display = "none";
+        if (mainSampleKits) mainSampleKits.style.display = "none";
+        mainQuotations.style.display = "flex";
+        leadsSidebarContent.style.display = "none";
+        loadQuotations();
+    });
+}
 
 
 // --- User List --- //
