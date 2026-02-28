@@ -27,6 +27,7 @@ let notificationPollingInterval = null;
 let allUsers = [];
 let currentSelectedUserId = null;
 let currentSelectedSessionId = null;
+let sessionRefreshInterval = null;
 
 // --- Auto-initialize dashboard on page load ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -271,7 +272,20 @@ function renderSessions(sessions) {
     });
 }
 
-let sessionRefreshInterval = null;
+// --- Reset main panel to empty state ---
+function resetView() {
+    currentSelectedUserId = null;
+    currentSelectedSessionId = null;
+    if (currentUserName) currentUserName.textContent = "Select a lead";
+    if (currentUserCompany) currentUserCompany.textContent = "to view conversation history";
+    if (sessionsContainer) sessionsContainer.style.display = "none";
+    if (chatContainer) chatContainer.style.display = "none";
+    if (emptyState) emptyState.style.display = "flex";
+    if (sessionRefreshInterval) {
+        clearInterval(sessionRefreshInterval);
+        sessionRefreshInterval = null;
+    }
+}
 
 async function selectSession(sessionId) {
     currentSelectedSessionId = sessionId;
@@ -293,7 +307,6 @@ async function selectSession(sessionId) {
                 return;
             }
             const data = await response.json();
-            console.log("[Admin] Messages response:", data);
             if (data.success) {
                 renderMessages(data.messages);
             } else {

@@ -145,6 +145,7 @@ def init_db():
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ''')
 
+    connection.commit()  # Ensure all DDL changes are committed
     cursor.close()
     connection.close()
     print("[OK] Database tables ready")

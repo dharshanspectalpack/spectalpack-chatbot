@@ -477,6 +477,9 @@ async function sendMessage() {
 
   if (!message || isLoading) return;
 
+  // Hide the welcome card when user actually sends a message
+  hideWelcomeCard();
+
   // Validate message length (max 5000 chars - DoS protection)
   if (message.length > 5000) {
     addMessage("⚠️ Message is too long (max 5000 characters).", "bot");
@@ -511,7 +514,7 @@ async function sendMessage() {
   await getAIResponse();
 }
 
-// =========================================          ===
+// ============================================
 // GET AI RESPONSE
 // ============================================
 async function getAIResponse() {
@@ -729,7 +732,9 @@ function renderChatHistory() {
 
   chatMessages.innerHTML = "";
 
-  chatHistory.forEach((message, index) => {
+  chatHistory
+    .filter(msg => !msg.content.includes('<div class="loading"></div>')) // skip spinner entries
+    .forEach((message, index) => {
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${message.role === "user" ? "user-message" : "bot-message"}`;
 
@@ -1006,5 +1011,5 @@ async function submitQuotation(event) {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<span>Send Quotation Request</span>';
-
   }
+}
