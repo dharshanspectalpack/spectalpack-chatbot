@@ -56,27 +56,25 @@
 
       <!-- Chat Messages Area -->
       <div class="chat-messages" id="chatMessages">
-        <!-- Messages added by JS -->
-      </div>
-
-      <!-- Welcome Card — sits just above the input, vanishes on typing -->
-      <div class="welcome-card" id="welcomeCard">
-        <p class="welcome-card-hint">✨ Quick Actions</p>
-        <div class="welcome-card-btns">
-          <button class="welcome-cta-btn sample-kit-cta" id="welcomeSampleKitBtn">
-            <span class="wc-icon">📦</span>
-            <span>Request Sample Kit</span>
-          </button>
-          <button class="welcome-cta-btn quotation-cta" id="welcomeQuotationBtn">
-            <span class="wc-icon">💬</span>
-            <span>Get a Quotation</span>
-          </button>
+        <!-- Welcome Card — appears in message area, collapses when user types -->
+        <div class="welcome-card" id="welcomeCard">
+          <p class="welcome-card-hint">✨ Quick Actions</p>
+          <div class="welcome-card-btns">
+            <button class="welcome-cta-btn sample-kit-cta" id="welcomeSampleKitBtn">
+              <span class="wc-icon">📦</span>
+              <span>Request Sample Kit</span>
+            </button>
+            <button class="welcome-cta-btn quotation-cta" id="welcomeQuotationBtn">
+              <span class="wc-icon">💬</span>
+              <span>Get a Quotation</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Input Area -->
       <div class="chat-input">
-        <!-- Quick Action Buttons — hidden by default, appear after user starts typing -->
+        <!-- Quick Action Buttons — hidden by default, appear above input after user types -->
         <div class="quick-action-row hidden" id="quickActionRow">
           <button class="quick-action-btn" id="quickSampleKitBtn" title="Request Sample Kit">
             <span>📦</span><span class="qa-label">Sample Kit</span>
