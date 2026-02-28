@@ -221,7 +221,9 @@ body {
 }
 
 /* Floating idle state — applied via JS after bounce-in */
+/* opacity: 1 is critical — without it the avatar disappears when animation switches */
 .chat-avatar.float-idle {
+  opacity: 1;
   animation: avatarFloat 3s ease-in-out infinite;
 }
 
@@ -230,18 +232,13 @@ body {
   transform: scale(1) translateY(0);
 }
 
-/* Avatar in "open/minimize" state — chat is currently open, stays same size */
-.chat-avatar.chat-open {
-  background: linear-gradient(145deg, #2e7d32 0%, #1b5e20 100%);
-  box-shadow:
-    0 6px 24px rgba(46, 125, 50, 0.6),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255,255,255,0.3);
+/* Hidden state — when chat is open, avatar hides */
+.chat-avatar.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.7) translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
   animation: none !important;
-}
-
-.chat-avatar.chat-open:hover {
-  transform: scale(1.1) translateY(-3px) !important;
 }
 
 .chat-avatar:hover {
