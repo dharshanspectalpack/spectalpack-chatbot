@@ -8,19 +8,13 @@ Spectal Digi Print Pvt. Ltd. is a digital flexible packaging company based in Ba
 
 Please note that **Spot UV, Spot Foil, Spot Matte, or Spot Mall effects are NOT possible** in our company.
 
-# company founders
 
-- Priyesh Dalmia is one of the co-founder of Spectalpack and is the managing director of the company
-
-- Aman Bachhawat is the other co-founder of Spectalpack
 
 # founded in
 
 2024
 
-# company Logo
 
-pls visit https://spectalpack.com/wp-content/uploads/2024/09/logo-updated.svg
 
 ## Our Technology
 

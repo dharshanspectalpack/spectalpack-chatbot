@@ -127,6 +127,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeBtn = document.getElementById("closeBtn");
   const userInput = document.getElementById("userInput");
 
+  // After bounce-in completes (delay 0.3s + duration 0.5s = ~0.9s), switch to gentle float
+  setTimeout(() => {
+    if (!chatAvatar.classList.contains("hidden")) {
+      chatAvatar.classList.add("float-idle");
+    }
+  }, 950);
+
   // Avatar click: toggle chat
   chatAvatar.addEventListener("click", function (e) {
     e.stopPropagation();
@@ -134,7 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // if opening chat
     if (chatContainer.classList.contains("open")) {
-      chatAvatar.classList.add("hidden"); // Hide avatar
+      chatAvatar.classList.add("hidden");
+      chatAvatar.classList.remove("float-idle"); // pause float while hidden
 
       // Close typing animation popup immediately
       const typingPopup = document.getElementById("typingPopup");
@@ -150,6 +158,12 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Close the chat
       chatAvatar.classList.remove("hidden"); // Show avatar
+      // Resume gentle float after reappearing
+      setTimeout(() => {
+        if (!chatAvatar.classList.contains("hidden")) {
+          chatAvatar.classList.add("float-idle");
+        }
+      }, 400);
     }
   });
 
@@ -158,6 +172,11 @@ document.addEventListener("DOMContentLoaded", function () {
     e.stopPropagation();
     chatContainer.classList.remove("open");
     chatAvatar.classList.remove("hidden"); // Show avatar
+    setTimeout(() => {
+      if (!chatAvatar.classList.contains("hidden")) {
+        chatAvatar.classList.add("float-idle");
+      }
+    }, 400);
   });
 
   // Wire up Enter key on the input (replaces removed inline onkeypress)

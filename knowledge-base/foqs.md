@@ -34,7 +34,6 @@ Digital printing reduces waste, eliminates printing plates, and supports efficie
 
 - Custom Sizes:Spectalpack can produce pouches in any dimensions needed for your SKUs. Right-sizing the pouch to each product means you won’t have excess packaging – it provides just enough space for your item. Properly sized packaging improves protection and presentation, and also reduces material waste and shipping costs (right-sized packaging minimizes unused space).
 
-
 # can we add window in a 3 layer metpet pouch
 
 We can do it on one side of the pouch make it without met pet and the other side can be with met pet.
