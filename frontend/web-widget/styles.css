@@ -735,13 +735,13 @@ body {
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   border-top: 1px solid #bbf7d0;
   border-bottom: 1px solid #bbf7d0;
-  padding: 10px 15px;
+  padding: 8px 15px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 0;
   transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease;
   overflow: hidden;
-  max-height: 90px;
+  max-height: 52px;
   opacity: 1;
   flex-shrink: 0;
 }
@@ -770,11 +770,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border-radius: 20px;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 16px;
   border: none;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -796,7 +796,7 @@ body {
   opacity: 0.92;
 }
 
-.wc-icon { font-size: 14px; }
+.wc-icon { font-size: 12px; }
 
 /* ============================================
          QUICK ACTION BUTTONS (left of input)
