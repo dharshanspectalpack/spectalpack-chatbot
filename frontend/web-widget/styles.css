@@ -386,32 +386,28 @@ body {
    ============================================ */
 .chat-messages {
   flex: 1;
-  padding: 15px;
+  padding: 16px 14px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  background: #f8f9fa;
+  gap: 12px;
+  background: #f5f7fa;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(76,175,80,0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(46,125,50,0.03) 0%, transparent 50%);
 }
 
 /* ============================================
             MESSAGE STYLES
    ============================================ */
 .message {
-  max-width: 85%;
-  animation: fadeIn 0.3s ease;
+  max-width: 82%;
+  animation: fadeIn 0.28s ease;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
 .user-message {
@@ -433,155 +429,152 @@ body {
   transition: opacity 0.2s, color 0.2s;
   padding: 5px;
 }
+.delete-msg-btn:hover { opacity: 1; color: #ef4444; }
 
-.delete-msg-btn:hover {
-  opacity: 1;
-  color: #ef4444; /* red icon on hover */
-}
+.bot-message { align-self: flex-start; }
 
-.bot-message {
-  align-self: flex-start;
+/* -- Bot avatar dot -- */
+.bot-message::before {
+  content: '🤖';
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 3px;
+  margin-left: 4px;
+  font-style: normal;
+  content: '';
 }
 
 .message-content {
-  padding: 14px 18px;
+  padding: 11px 15px;
   border-radius: 18px;
   position: relative;
-  font-size: 14.5px;
-  letter-spacing: 0.2px;
+  font-size: 14px;
+  line-height: 1.55;
+  letter-spacing: 0.15px;
 }
 
 .user-message .message-content {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(145deg, #22c55e 0%, #16a34a 100%);
   color: white;
   border-radius: 18px 18px 4px 18px;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 4px 14px rgba(34, 197, 94, 0.3),
+    0 1px 3px rgba(0,0,0,0.06);
 }
 
 .bot-message .message-content {
   background: #ffffff;
   color: #1e293b;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px 18px 18px 4px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 4px 18px 18px 18px;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.05),
+    0 1px 2px rgba(0,0,0,0.04);
 }
 
 .message-content p {
-  line-height: 1.5;
-  margin: 0;
-  margin-bottom: 8px; /* Adds space between paragraphs if any */
+  line-height: 1.55;
+  margin: 0 0 6px 0;
 }
-
-.message-content p:last-child {
-  margin-bottom: 0;
-}
+.message-content p:last-child { margin-bottom: 0; }
 
 .message-content ul,
 .message-content ol {
-  margin: 8px 0 8px 18px;
+  margin: 6px 0 6px 18px;
   padding: 0;
 }
-
-.message-content li {
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
-.message-content li:last-child {
-  margin-bottom: 0;
-}
+.message-content li { margin-bottom: 4px; line-height: 1.4; }
+.message-content li:last-child { margin-bottom: 0; }
 
 .message-time {
   font-size: 10px;
-  color: #888;
+  color: #94a3b8;
   text-align: right;
-  margin-top: 5px;
+  margin-top: 4px;
   display: block;
+  letter-spacing: 0.3px;
 }
+
 
 /* ============================================
                 CHAT INPUT AREA
    ============================================ */
 .chat-input {
-  padding: 15px;
-  border-top: 1px solid #e0e0e0;
-  background: white;
+  padding: 10px 13px 13px;
+  border-top: 1px solid rgba(226,232,240,0.8);
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
+  backdrop-filter: blur(10px);
 }
 
 .input-container {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: center;
 }
 
 #userInput {
   flex: 1;
-  padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 25px;
-  font-size: 14px;
+  padding: 11px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 24px;
+  font-size: 13.5px;
   outline: none;
-  transition: border-color 0.3s;
-  background: #f8f9fa;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: inherit;
 }
 
 #userInput:focus {
-  border-color: #4caf50;
+  border-color: #22c55e;
   background: white;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
 }
 
 #userInput::placeholder {
-  color: #aaa;
+  color: #b0bec5;
+  font-size: 13px;
 }
 
 .send-btn {
-  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+  background: linear-gradient(145deg, #22c55e 0%, #16a34a 100%);
   border: none;
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(34,197,94,0.3);
 }
 
 .send-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+  transform: scale(1.08);
+  box-shadow: 0 5px 18px rgba(34,197,94,0.45);
 }
 
-.send-btn:active {
-  transform: scale(0.95);
-}
+.send-btn:active { transform: scale(0.94); }
 
-.send-btn svg {
-  width: 20px;
-  height: 20px;
-}
+.send-btn svg { width: 18px; height: 18px; }
+
 
 /* ============================================
                 SCROLLBAR STYLES
    ============================================ */
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: rgba(148,163,184,0.4);
   border-radius: 10px;
 }
-
 .chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: rgba(100,116,139,0.6);
 }
+
 
 /* ============================================
                 RESPONSIVE DESIGN
@@ -804,43 +797,43 @@ body {
    ============================================ */
 .quick-action-row {
   display: flex;
-  gap: 6px;
+  gap: 7px;
   margin-bottom: 8px;
   transition: all 0.3s ease;
-  max-height: 40px;
   overflow: hidden;
   opacity: 1;
 }
 
 /* Hidden by default — appears only after user starts typing */
-.quick-action-row.hidden {
-  display: none;
-}
+.quick-action-row.hidden { display: none; }
 
 .quick-action-btn {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 5px 10px;
-  border-radius: 16px;
-  border: 1.5px solid #e2e8f0;
-  background: #f8fafc;
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1.5px solid #d1fae5;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   font-size: 11.5px;
   font-weight: 600;
-  color: #374151;
+  color: #15803d;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(34,197,94,0.1);
 }
 
 .quick-action-btn:hover {
-  border-color: #4caf50;
-  background: #f0fdf4;
-  color: #166534;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border-color: transparent;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34,197,94,0.3);
 }
 
 .qa-label { font-size: 11px; }
+
 
 /* ============================================
              FORM PANEL OVERLAY
